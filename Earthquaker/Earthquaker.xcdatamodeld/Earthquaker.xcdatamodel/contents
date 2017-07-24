@@ -6,7 +6,7 @@
         </attribute>
         <userInfo/>
     </entity>
-    <entity name="Quake" representedClassName="Quake" syncable="YES" codeGenerationType="class">
+    <entity name="Quake" representedClassName="Quake" syncable="YES">
         <attribute name="alert" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="cdi" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
