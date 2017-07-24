@@ -15,6 +15,8 @@
 		EDE887371F25687500634B07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDE887351F25687500634B07 /* Main.storyboard */; };
 		EDE887391F25687500634B07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDE887381F25687500634B07 /* Assets.xcassets */; };
 		EDE8873C1F25687500634B07 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDE8873A1F25687500634B07 /* LaunchScreen.storyboard */; };
+		EDE887471F2581EE00634B07 /* Quake+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE887441F2581EE00634B07 /* Quake+CoreDataClass.m */; };
+		EDE887481F2581EE00634B07 /* Quake+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE887461F2581EE00634B07 /* Quake+CoreDataProperties.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,10 @@
 		EDE887381F25687500634B07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EDE8873B1F25687500634B07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EDE8873D1F25687500634B07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDE887431F2581ED00634B07 /* Quake+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Quake+CoreDataClass.h"; sourceTree = "<group>"; };
+		EDE887441F2581EE00634B07 /* Quake+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Quake+CoreDataClass.m"; sourceTree = "<group>"; };
+		EDE887451F2581EE00634B07 /* Quake+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Quake+CoreDataProperties.h"; sourceTree = "<group>"; };
+		EDE887461F2581EE00634B07 /* Quake+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Quake+CoreDataProperties.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +53,10 @@
 		EDE8871A1F25687400634B07 = {
 			isa = PBXGroup;
 			children = (
+				EDE887431F2581ED00634B07 /* Quake+CoreDataClass.h */,
+				EDE887441F2581EE00634B07 /* Quake+CoreDataClass.m */,
+				EDE887451F2581EE00634B07 /* Quake+CoreDataProperties.h */,
+				EDE887461F2581EE00634B07 /* Quake+CoreDataProperties.m */,
 				EDE887251F25687400634B07 /* Earthquaker */,
 				EDE887241F25687400634B07 /* Products */,
 			);
@@ -159,9 +169,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDE887481F2581EE00634B07 /* Quake+CoreDataProperties.m in Sources */,
 				EDE887341F25687500634B07 /* DetailViewController.m in Sources */,
 				EDE887311F25687500634B07 /* MasterViewController.m in Sources */,
 				EDE8872E1F25687500634B07 /* Earthquaker.xcdatamodeld in Sources */,
+				EDE887471F2581EE00634B07 /* Quake+CoreDataClass.m in Sources */,
 				EDE8872B1F25687500634B07 /* AppDelegate.m in Sources */,
 				EDE887281F25687400634B07 /* main.m in Sources */,
 			);
