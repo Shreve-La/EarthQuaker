@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int16_t tz;
 @property (nonatomic) int64_t updated;
 @property (nullable, nonatomic, copy) NSString *url;
+@property (nullable, nonatomic, copy) NSString *nearbySearchURL;
 
 @end
 

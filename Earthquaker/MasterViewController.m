@@ -24,15 +24,7 @@
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
     [self fetchUSGSData];
-    // Do any additional setup after loading the view, typically from a nib.
-    
-// TODO: Remove if not needed
-//    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-// TODO: Remove if not needed
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-//    self.navigationItem.rightBarButtonItem = addButton;
-//    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 
@@ -41,28 +33,6 @@
     [super viewWillAppear:animated];
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
-//- (void)insertNewObject:(Quake*)quake {
-//    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-//    Quake *newQuake = [[Quake alloc] initWithContext:context];
-//        
-//   
-//        
-//    // Save the context.
-//    NSError *error = nil;
-//    if (![context save:&error]) {
-//        // Replace this implementation with code to handle the error appropriately.
-//        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-//        abort();
-//    }
-//}
 
 
 #pragma mark - Segues
@@ -212,11 +182,13 @@
 
 
 #pragma mark - API Caller
+
 -(void)fetchUSGSData{
 NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"];
 NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
 NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    
 NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     if (error) {
         NSLog(@"error: %@", error.localizedDescription);
@@ -233,8 +205,9 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
     NSLog(@"quakes: %@", quakes);
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
+    
     for (NSDictionary *quakeitem in quakes[@"features"]) {
+        
         Quake *quake = [[Quake alloc] initWithContext:context];
         
         quake.place = quakeitem[@"properties"][@"place"];
@@ -244,11 +217,11 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
         quake.url = quakeitem[@"properties"][@"url"];
         
-   
+        
         NSString* temp = quakeitem[@"properties"][@"felt"];
         if (![temp isEqual:[NSNull null]]){
             quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
-            }
+        }
         quake.detail = quakeitem[@"properties"][@"detail"];
         
         NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
@@ -256,6 +229,10 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.longitude = [geometry[0] doubleValue];
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
+        
+        [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
+        NSLog(@"%@", quake.nearbySearchURL);
+        
         
         
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -266,12 +243,7 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         }];
     }
   
-    
     [self.appDelegate saveContext];
-
-    
-    
-    
     [self.tableView reloadData];
 }];
 
@@ -280,15 +252,10 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
 }
 
 
-
-
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
- 
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
+    [self.tableView reloadData];}
+*/
 
 @end

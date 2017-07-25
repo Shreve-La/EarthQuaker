@@ -44,5 +44,6 @@
 @dynamic tz;
 @dynamic updated;
 @dynamic url;
+@dynamic nearbySearchURL;
 
 @end
