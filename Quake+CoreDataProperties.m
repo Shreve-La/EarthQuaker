@@ -2,7 +2,7 @@
 //  Quake+CoreDataProperties.m
 //  Earthquaker
 //
-//  Created by swcl on 2017-07-23.
+//  Created by swcl on 2017-07-24.
 //  Copyright © 2017 Shreve.ca. All rights reserved.
 //
 
@@ -14,35 +14,35 @@
 	return [[NSFetchRequest alloc] initWithEntityName:@"Quake"];
 }
 
-@dynamic mag;
-@dynamic place;
-@dynamic time;
-@dynamic updated;
-@dynamic tz;
-@dynamic url;
-@dynamic detail;
-@dynamic felt;
-@dynamic cdi;
-@dynamic mmi;
 @dynamic alert;
-@dynamic status;
-@dynamic tsunami;
-@dynamic sig;
-@dynamic net;
+@dynamic cdi;
 @dynamic code;
-@dynamic ids;
-@dynamic sources;
-@dynamic types;
-@dynamic nst;
-@dynamic dmin;
-@dynamic rms;
-@dynamic gap;
-@dynamic magType;
-@dynamic type;
-@dynamic longitude;
-@dynamic latitude;
 @dynamic depth;
+@dynamic detail;
+@dynamic dmin;
+@dynamic felt;
+@dynamic gap;
 @dynamic id;
+@dynamic ids;
+@dynamic latitude;
+@dynamic longitude;
+@dynamic mag;
+@dynamic magType;
+@dynamic mmi;
+@dynamic net;
+@dynamic nst;
+@dynamic place;
+@dynamic rms;
+@dynamic sig;
+@dynamic sources;
+@dynamic status;
+@dynamic time;
 @dynamic title;
+@dynamic tsunami;
+@dynamic type;
+@dynamic types;
+@dynamic tz;
+@dynamic updated;
+@dynamic url;
 
 @end
