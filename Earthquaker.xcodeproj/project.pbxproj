@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30E618451F26724C0016D26F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E618441F26724C0016D26F /* MapKit.framework */; };
 		EDE887281F25687400634B07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE887271F25687400634B07 /* main.m */; };
 		EDE8872B1F25687500634B07 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE8872A1F25687500634B07 /* AppDelegate.m */; };
 		EDE8872E1F25687500634B07 /* Earthquaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EDE8872C1F25687500634B07 /* Earthquaker.xcdatamodeld */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		30E618441F26724C0016D26F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		EDE887231F25687400634B07 /* Earthquaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Earthquaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDE887271F25687400634B07 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EDE887291F25687400634B07 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -44,12 +46,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30E618451F26724C0016D26F /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		30E618431F26724B0016D26F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				30E618441F26724C0016D26F /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EDE8871A1F25687400634B07 = {
 			isa = PBXGroup;
 			children = (
@@ -59,6 +70,7 @@
 				EDE8874C1F2583AC00634B07 /* Quake+CoreDataProperties.m */,
 				EDE887251F25687400634B07 /* Earthquaker */,
 				EDE887241F25687400634B07 /* Products */,
+				30E618431F26724B0016D26F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,7 +140,7 @@
 				TargetAttributes = {
 					EDE887221F25687400634B07 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 294FN9LFDB;
+						DevelopmentTeam = 4KJC5XPKL6;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -297,7 +309,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 294FN9LFDB;
+				DEVELOPMENT_TEAM = 4KJC5XPKL6;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
@@ -309,7 +321,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 294FN9LFDB;
+				DEVELOPMENT_TEAM = 4KJC5XPKL6;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
@@ -336,6 +348,7 @@
 				EDE887421F25687500634B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
