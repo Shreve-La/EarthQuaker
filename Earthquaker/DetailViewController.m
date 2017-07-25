@@ -7,8 +7,17 @@
 //
 
 #import "DetailViewController.h"
+@import MapKit;
 
 @interface DetailViewController ()
+@property (nonatomic) CLLocationCoordinate2D quakeLocation;
+@property (weak, nonatomic) IBOutlet MKMapView *quakeLocationMap;
+@property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *placeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *titileQuakeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *magnitudeLabel;
 
 @end
 
@@ -17,17 +26,72 @@
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = self.detailItem.title;
+      self.titileQuakeLabel.text = self.detailItem.title;
+      self.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", self.detailItem.mag];
+      self.placeLabel.text = self.detailItem.place;
+      
+      NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:self.detailItem.time/10];
+      NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+      [formatter setDateStyle:NSDateFormatterMediumStyle];
+      [formatter setTimeStyle:NSDateFormatterShortStyle];
+      
+      self.timeLabel.text = [formatter stringFromDate:timeFormatted];
+      
     }
 }
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     [self configureView];
+  [self quakeLocationData];
+ // NSLog(@"%f did it work?", self.detailItem.latitude);
+  
+  
 }
 
+- (void)quakeLocationData {
+  
+  double longitude  = self.detailItem.longitude;
+  double latitude = self.detailItem.latitude;
+  
+   self.quakeLocation = CLLocationCoordinate2DMake(latitude, longitude);
+
+//    self.photo.coordinate = catLocation;
+    self.latitudeLabel.text = [NSString stringWithFormat:@"Latitude: %f", self.quakeLocation.latitude];
+    self.longitudeLabel.text = [NSString stringWithFormat:@"Longitude: %f", self.quakeLocation.longitude];
+  
+//    [self setMapView];
+  
+}
+
+//- (void)setMapView {
+//  MKCoordinateSpan span = MKCoordinateSpanMake(0.5f, 0.5f);
+//  self.quakeLocationMap.region = MKCoordinateRegionMake(self.quakeLocation, span);
+////  [self.quakeLocationMap addAnnotation:self.detailItem];
+//}
+
+
+//- (MKAnnotationView *)mapView:(MKMapView *)sender viewForAnnotation:(id < MKAnnotation >)annotation
+//{
+//  static NSString *reuseId = @"StandardPin";
+//
+//  MKAnnotationView *aView = (MKAnnotationView *)[sender
+//                                                 dequeueReusableAnnotationViewWithIdentifier:reuseId];
+//
+//  if (aView == nil)
+//  {
+//    aView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseId];
+//    aView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+//    aView.canShowCallout = YES;
+//  }
+//  aView.image = [UIImage imageNamed : @"Location_OnMap"];
+//  aView.annotation = annotation;
+//  aView.calloutOffset = CGPointMake(0, -5);
+//  aView.draggable = YES;
+//  aView.enabled = YES;
+//  return aView;
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
