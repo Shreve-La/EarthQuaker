@@ -8,8 +8,12 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "AppDelegate.h"
 
 @interface MasterViewController ()
+
+@property (nonatomic, strong) AppDelegate *appDelegate;
+@property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
 
@@ -17,15 +21,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    self.context = self.appDelegate.persistentContainer.viewContext;
+    [self fetchUSGSData];
     // Do any additional setup after loading the view, typically from a nib.
     
 // TODO: Remove if not needed
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+//    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
 // TODO: Remove if not needed
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+//    self.navigationItem.rightBarButtonItem = addButton;
+//    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 
@@ -41,22 +48,21 @@
 }
 
 
-- (void)insertNewObject:(id)sender {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    Event *newEvent = [[Event alloc] initWithContext:context];
-        
-    // If appropriate, configure the new managed object.
-    newEvent.timestamp = [NSDate date];
-        
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-        abort();
-    }
-}
+//- (void)insertNewObject:(Quake*)quake {
+//    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+//    Quake *newQuake = [[Quake alloc] initWithContext:context];
+//        
+//   
+//        
+//    // Save the context.
+//    NSError *error = nil;
+//    if (![context save:&error]) {
+//        // Replace this implementation with code to handle the error appropriately.
+//        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+//        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+//        abort();
+//    }
+//}
 
 
 #pragma mark - Segues
@@ -64,7 +70,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Event *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        Quake *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
         DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
         [controller setDetailItem:object];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
@@ -88,8 +94,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    Event *event = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self configureCell:cell withEvent:event];
+    Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self configureCell:cell withQuake:quake];
     return cell;
 }
 
@@ -116,31 +122,31 @@
 }
 
 
-- (void)configureCell:(UITableViewCell *)cell withEvent:(Event *)event {
-    cell.textLabel.text = event.timestamp.description;
+- (void)configureCell:(UITableViewCell *)cell withQuake:(Quake *)quake {
+    cell.textLabel.text = quake.title;
 }
 
 
 #pragma mark - Fetched results controller
 
-- (NSFetchedResultsController<Event *> *)fetchedResultsController {
+- (NSFetchedResultsController<Quake *> *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
     
-    NSFetchRequest<Event *> *fetchRequest = Event.fetchRequest;
+    NSFetchRequest<Quake *> *fetchRequest = Quake.fetchRequest;
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timestamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
 
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController<Event *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController<Quake *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
     aFetchedResultsController.delegate = self;
     
     NSError *error = nil;
@@ -190,11 +196,11 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withEvent:anObject];
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withQuake:anObject];
             break;
             
         case NSFetchedResultsChangeMove:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withEvent:anObject];
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withQuake:anObject];
             [tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
             break;
     }
@@ -204,8 +210,80 @@
     [self.tableView endUpdates];
 }
 
+
+#pragma mark - API Caller
+-(void)fetchUSGSData{
+NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"];
+NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
+NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    if (error) {
+        NSLog(@"error: %@", error.localizedDescription);
+        return ;
+    }
+    NSError *jsonError = nil;
+    
+    NSDictionary *quakes = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+    
+    if (jsonError) {
+        NSLog(@"jsonError: %@", jsonError.localizedDescription);
+        return ;
+    }
+    NSLog(@"quakes: %@", quakes);
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+
+    for (NSDictionary *quakeitem in quakes[@"features"]) {
+        Quake *quake = [[Quake alloc] initWithContext:context];
+        
+        quake.place = quakeitem[@"properties"][@"place"];
+        quake.time = [quakeitem[@"properties"][@"time"] intValue];
+        quake.title = quakeitem[@"properties"][@"title"];
+        quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
+        quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
+        quake.url = quakeitem[@"properties"][@"url"];
+        
+   
+        NSString* temp = quakeitem[@"properties"][@"felt"];
+        if (![temp isEqual:[NSNull null]]){
+            quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
+            }
+        quake.detail = quakeitem[@"properties"][@"detail"];
+        
+        NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
+        NSLog(@"%@", geometry[0]);
+        quake.longitude = [geometry[0] doubleValue];
+        quake.latitude = [geometry[1] doubleValue];
+        quake.depth = [geometry[2] doubleValue];
+        
+        
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        [queue addOperationWithBlock:^{
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            }];
+        }];
+    }
+  
+    
+    [self.appDelegate saveContext];
+
+    
+    
+    
+    [self.tableView reloadData];
+}];
+
+[dataTask resume];
+
+}
+
+
+
+
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
+// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
  
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // In the simplest, most efficient, case, reload the table view.

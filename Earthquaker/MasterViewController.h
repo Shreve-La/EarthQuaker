@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
-#import "Earthquaker+CoreDataModel.h"
+#import "Quake+CoreDataClass.h"
 
 @class DetailViewController;
 
@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
-@property (strong, nonatomic) NSFetchedResultsController<Event *> *fetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController<Quake *> *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 
