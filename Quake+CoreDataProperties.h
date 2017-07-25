@@ -2,7 +2,7 @@
 //  Quake+CoreDataProperties.h
 //  Earthquaker
 //
-//  Created by swcl on 2017-07-24.
+//  Created by swcl on 2017-07-25.
 //  Copyright © 2017 Shreve.ca. All rights reserved.
 //
 
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int16_t sig;
 @property (nullable, nonatomic, copy) NSString *sources;
 @property (nullable, nonatomic, copy) NSString *status;
-@property (nonatomic) int32_t time;
+@property (nonatomic) double time;
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nonatomic) int16_t tsunami;
 @property (nullable, nonatomic, copy) NSString *type;
