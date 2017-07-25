@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Earthquaker+CoreDataModel.h"
+// #import "Earthquaker+CoreDataModel.h"
+#import "Quake+CoreDataClass.h"
 
 @interface DetailViewController : UIViewController
 
-@property (strong, nonatomic) Event *detailItem;
+@property (strong, nonatomic) Quake *detailItem;
 @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 
 @end
