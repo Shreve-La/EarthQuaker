@@ -9,11 +9,13 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "AppDelegate.h"
+#import "QuakeCell.h"
 
 @interface MasterViewController ()
 
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
+
 
 @end
 
@@ -23,7 +25,10 @@
     [super viewDidLoad];
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
-    [self fetchUSGSData];
+//    [self fetchUSGSData];
+  
+  
+  
     // Do any additional setup after loading the view, typically from a nib.
     
 // TODO: Remove if not needed
@@ -65,6 +70,8 @@
 //}
 
 
+
+
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -93,8 +100,9 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//    cell.quake = quake;
     [self configureCell:cell withQuake:quake];
     return cell;
 }
@@ -122,8 +130,29 @@
 }
 
 
-- (void)configureCell:(UITableViewCell *)cell withQuake:(Quake *)quake {
-    cell.textLabel.text = quake.title;
+- (void)configureCell:(QuakeCell *)cell withQuake:(Quake *)quake {
+  
+//    cell.textLabel.text = quake.title;
+  
+  NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time];
+  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+  [formatter setDateStyle:NSDateFormatterMediumStyle];
+  [formatter setTimeStyle:NSDateFormatterShortStyle];
+  
+    cell.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", quake.mag];
+    cell.titleQuakeLabel.text = quake.title;
+    cell.placeLabel.text = quake.place;
+  
+  cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
+ ;
+
+  
+ 
+  
+  
+  NSLog(@"formatted time: %@", timeFormatted);
+  
+  
 }
 
 
@@ -198,7 +227,7 @@
         case NSFetchedResultsChangeUpdate:
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withQuake:anObject];
             break;
-            
+        
         case NSFetchedResultsChangeMove:
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] withQuake:anObject];
             [tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
@@ -213,7 +242,7 @@
 
 #pragma mark - API Caller
 -(void)fetchUSGSData{
-NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"];
+NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"];
 NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
 NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
@@ -268,9 +297,6 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
   
     
     [self.appDelegate saveContext];
-
-    
-    
     
     [self.tableView reloadData];
 }];
