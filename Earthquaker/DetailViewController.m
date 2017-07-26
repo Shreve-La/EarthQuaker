@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *placeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *titileQuakeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *titleQuakeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *magnitudeLabel;
 
 @end
@@ -26,7 +26,7 @@
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
-      self.titileQuakeLabel.text = self.detailItem.title;
+      self.titleQuakeLabel.text = self.detailItem.title;
       self.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", self.detailItem.mag];
       self.placeLabel.text = self.detailItem.place;
       

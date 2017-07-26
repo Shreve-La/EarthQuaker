@@ -127,7 +127,7 @@
                         <outlet property="placeLabel" destination="UXZ-D5-LnQ" id="DxW-sU-awb"/>
                         <outlet property="quakeLocationMap" destination="vfS-UN-RdI" id="FO2-5Z-bDE"/>
                         <outlet property="timeLabel" destination="YDv-62-bFG" id="zgZ-e9-pD7"/>
-                        <outlet property="titileQuakeLabel" destination="07U-J7-fT9" id="qDl-z8-UYG"/>
+                        <outlet property="titleQuakeLabel" destination="07U-J7-fT9" id="eYj-gm-51w"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
