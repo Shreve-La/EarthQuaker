@@ -226,7 +226,7 @@
   
 //    cell.textLabel.text = quake.title;
   
-  NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time];
+  NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time/1000];
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
   [formatter setDateStyle:NSDateFormatterMediumStyle];
   [formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -240,7 +240,6 @@
   NSLog(@"formatted time: %@", timeFormatted);
   
 }
-
 
 #pragma mark - Fetched results controller
 
