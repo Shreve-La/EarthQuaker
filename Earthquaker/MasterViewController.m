@@ -16,8 +16,8 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
-@property (nonatomic)  NSMutableArray *dataEarthquakes;
-@property (nonatomic)  NSMutableArray *searchResults;
+@property (nonatomic)  NSArray *dataEarthquakes;
+@property (nonatomic)  NSArray *searchResults;
 
 @end
 
@@ -28,13 +28,15 @@
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
   [self fetchUSGSData];
-  
-  self.dataEarthquakes = [[NSMutableArray alloc]init];
-  self.searchResults = [[NSMutableArray alloc]init];
-  
-  [self fetchDataFromCoreDataForSearchBarResult];
+  [self.tableView reloadData];
+//  self.dataEarthquakes = @[];
+//  self.searchResults = @[];
+//  
+//  [self fetchDataFromCoreDataForSearchBarResult];
   [self setupSearchController];
-  
+
+//  self.dataEarthquakes  = [self.fetchedResultsController fetchedObjects];
+
   
     // Do any additional setup after loading the view, typically from a nib.
     
@@ -97,21 +99,6 @@
   [self.searchController.searchBar sizeToFit];
 }
 
-// to get data from coredata into the searchBar for initial character searching
-- (void)fetchDataFromCoreDataForSearchBarResult {
-  NSArray *tempArr  = [self.fetchedResultsController fetchedObjects];
-  
-  for (Quake *quake1 in tempArr) {
-    NSString *quakeDesc = [quake1 valueForKey:@"place"];//to get data from the place attribute of the entity
-    NSLog(@"quake desc %@", quakeDesc);
-    
-    NSMutableArray *tempArr2 = [@[]mutableCopy];
-    if (![quakeDesc isEqual:nil]) {
-      [tempArr2 addObject:quakeDesc];
-      [self.dataEarthquakes arrayByAddingObjectsFromArray: tempArr2];
-    }
-  }
-}
 
 //implementing the required method for the delegate - searchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
@@ -121,8 +108,10 @@
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@",@"size", strippedString];
-    self.searchResults = [self.dataEarthquakes filteredArrayUsingPredicate:resultPredicate];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@",@"place", strippedString];
+    self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
+    [self.fetchedResultsController performFetch:nil];
+//    self.searchResults = [self.dataEarthquakes filteredArrayUsingPredicate:resultPredicate];
     [self.tableView reloadData];
     
   }
