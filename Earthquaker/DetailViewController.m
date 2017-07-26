@@ -57,7 +57,6 @@
   
    self.quakeLocation = CLLocationCoordinate2DMake(latitude, longitude);
 
-//    self.photo.coordinate = catLocation;
     self.latitudeLabel.text = [NSString stringWithFormat:@"Latitude: %f", self.quakeLocation.latitude];
     self.longitudeLabel.text = [NSString stringWithFormat:@"Longitude: %f", self.quakeLocation.longitude];
   

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
+
 @end
 
 @implementation MasterViewController
@@ -24,7 +25,10 @@
     [super viewDidLoad];
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
-    [self fetchUSGSData];
+//    [self fetchUSGSData];
+  
+  
+  
     // Do any additional setup after loading the view, typically from a nib.
     
 // TODO: Remove if not needed
@@ -64,6 +68,8 @@
 //        abort();
 //    }
 //}
+
+
 
 
 #pragma mark - Segues
@@ -291,9 +297,6 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
   
     
     [self.appDelegate saveContext];
-
-    
-    
     
     [self.tableView reloadData];
 }];
