@@ -8,12 +8,13 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "APICallerPlaceImage.h"
 #import "AppDelegate.h"
 #import "QuakeCell.h"
 
+
 @interface MasterViewController ()
 
-@property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 
@@ -25,19 +26,9 @@
     [super viewDidLoad];
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
-//    [self fetchUSGSData];
-  
-  
-  
-    // Do any additional setup after loading the view, typically from a nib.
-    
-// TODO: Remove if not needed
-//    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-// TODO: Remove if not needed
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-//    self.navigationItem.rightBarButtonItem = addButton;
-//    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+   [self fetchUSGSData];
+
 }
 
 
@@ -46,28 +37,6 @@
     [super viewWillAppear:animated];
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
-//- (void)insertNewObject:(Quake*)quake {
-//    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-//    Quake *newQuake = [[Quake alloc] initWithContext:context];
-//        
-//   
-//        
-//    // Save the context.
-//    NSError *error = nil;
-//    if (![context save:&error]) {
-//        // Replace this implementation with code to handle the error appropriately.
-//        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-//        abort();
-//    }
-//}
 
 
 
@@ -240,12 +209,14 @@
 }
 
 
-#pragma mark - API Caller
+#pragma mark - Fetch USGS Data; add to coredata as a Quake entity
+
 -(void)fetchUSGSData{
 NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"];
 NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
 NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    
 NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     if (error) {
         NSLog(@"error: %@", error.localizedDescription);
@@ -259,46 +230,56 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         NSLog(@"jsonError: %@", jsonError.localizedDescription);
         return ;
     }
-    NSLog(@"quakes: %@", quakes);
+
+//    NSLog(@"quakes: %@", quakes);
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
+  
+// Process USGS JSON Data and add to coredata.
     for (NSDictionary *quakeitem in quakes[@"features"]) {
+        
         Quake *quake = [[Quake alloc] initWithContext:context];
         
         quake.place = quakeitem[@"properties"][@"place"];
         quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
         quake.title = quakeitem[@"properties"][@"title"];
         quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
-        quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
+        quake.updated = [quakeitem[@"properties"][@"updated"] doubleValue];
         quake.url = quakeitem[@"properties"][@"url"];
         
-   
         NSString* temp = quakeitem[@"properties"][@"felt"];
         if (![temp isEqual:[NSNull null]]){
             quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
-            }
+        }
         quake.detail = quakeitem[@"properties"][@"detail"];
         
         NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
-        NSLog(@"%@", geometry[0]);
         quake.longitude = [geometry[0] doubleValue];
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
-        
+
+// move to deque reusable cell so as not to call unless required
+
+        // get nearby serach url  & Call it
+        [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
+        NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
+        [APICallerPlaceImage callNearbySearchWithQuake:quake];
+        NSLog(@"Photo Search: %@", quake.photoReference);
+
+     
+
+// complete network call
         
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-        [queue addOperationWithBlock:^{
-            
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            }];
-        }];
+        
+        [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
+        break;
     }
   
-    
     [self.appDelegate saveContext];
-    
+
     [self.tableView reloadData];
+    
 }];
 
 [dataTask resume];
@@ -306,15 +287,10 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
 }
 
 
-
-
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
- 
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
+    [self.tableView reloadData];}
+*/
 
 @end
