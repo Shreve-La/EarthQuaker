@@ -353,7 +353,7 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         Quake *quake = [[Quake alloc] initWithContext:context];
         
         quake.place = quakeitem[@"properties"][@"place"];
-        quake.time = [quakeitem[@"properties"][@"time"] intValue];
+        quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
         quake.title = quakeitem[@"properties"][@"title"];
         quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
         quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
