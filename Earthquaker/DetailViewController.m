@@ -30,7 +30,7 @@
       self.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", self.detailItem.mag];
       self.placeLabel.text = self.detailItem.place;
       
-      NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:self.detailItem.time/10];
+      NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:self.detailItem.time/1000];
       NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
       [formatter setDateStyle:NSDateFormatterMediumStyle];
       [formatter setTimeStyle:NSDateFormatterShortStyle];

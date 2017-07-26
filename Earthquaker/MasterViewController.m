@@ -17,17 +17,23 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
+@property (nonatomic)  NSArray *dataEarthquakes;
+@property (nonatomic)  NSArray *searchResults;
 
 @end
 
 @implementation MasterViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    self.context = self.appDelegate.persistentContainer.viewContext;
 
-   [self fetchUSGSData];
+  [super viewDidLoad];
+  self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+  self.context = self.appDelegate.persistentContainer.viewContext;
+  [self fetchUSGSData];
+  [self.tableView reloadData];
+  self.dataEarthquakes = @[];
+  self.searchResults = @[];
+  [self setupSearchController];
 
 }
 
@@ -39,6 +45,51 @@
 
 
 
+
+#pragma mark - SearchBar and UISearchController
+
+- (void)setupSearchController {
+  // Setup the Search Controller
+  // following delegates are included in the H file UISearchBarDelegate, UISearchControllerDelegate and UISearchResultsUpdating.
+  
+  self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+  self.searchController.searchResultsUpdater = self; //updater delegate, in H file
+  self.searchController.dimsBackgroundDuringPresentation = NO;
+  self.searchController.searchBar.delegate = self;
+  
+  NSArray *scopeTitles = @[@"all", @"mag", @"felt"]; //to be used for segmented controls
+  scopeTitles =  self.searchController.searchBar.scopeButtonTitles;
+  
+  self.tableView.tableHeaderView = self.searchController.searchBar;
+  self.definesPresentationContext = YES;
+  [self.searchController.searchBar sizeToFit];
+}
+
+
+//implementing the required method for the delegate - searchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+  NSString *searchString = searchController.searchBar.text;
+  if (!searchString.length) {
+    self.searchResults =self.dataEarthquakes;
+  } else {
+    // strip out all the leading and trailing spaces
+    NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"place", strippedString];
+    self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
+    NSError *err = nil;
+    [self.fetchedResultsController performFetch:&err];
+    if (err != nil) {
+      NSLog(@"Error searching: %@", err.localizedDescription);
+      abort();
+    }
+    [self.tableView reloadData];
+  
+  }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+  [self updateSearchResultsForSearchController:self.searchController];
+}
 
 
 #pragma mark - Segues
@@ -61,19 +112,23 @@
     return [[self.fetchedResultsController sections] count];
 }
 
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
+  
+  id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+  return [sectionInfo numberOfObjects];
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//    cell.quake = quake;
-    [self configureCell:cell withQuake:quake];
-    return cell;
+  QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+  
+  if (cell == nil) {
+    cell = [[QuakeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+  }
+  
+  Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
+  [self configureCell:cell withQuake:quake];
+  
+  return cell;
 }
 
 
@@ -103,7 +158,7 @@
   
 //    cell.textLabel.text = quake.title;
   
-  NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time];
+  NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time/1000];
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
   [formatter setDateStyle:NSDateFormatterMediumStyle];
   [formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -114,16 +169,9 @@
   
   cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
  ;
-
-  
- 
-  
-  
   NSLog(@"formatted time: %@", timeFormatted);
   
-  
 }
-
 
 #pragma mark - Fetched results controller
 
@@ -144,7 +192,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController<Quake *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController<Quake *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     
     NSError *error = nil;
