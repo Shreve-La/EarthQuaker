@@ -9,11 +9,9 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "APICallerPlaceImage.h"
-#import "AppDelegate.h"
 
 @interface MasterViewController ()
 
-@property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
@@ -216,7 +214,7 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
         quake.title = quakeitem[@"properties"][@"title"];
         quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
-        quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
+        quake.updated = [quakeitem[@"properties"][@"updated"] doubleValue];
         quake.url = quakeitem[@"properties"][@"url"];
         
         NSString* temp = quakeitem[@"properties"][@"felt"];

@@ -14,13 +14,10 @@
 
 @interface APICallerPlaceImage : NSObject
 
-//@property (strong, nonatomic) NSString *photoReference;
-@property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchedResultsController<Quake *> *fetchedResultsController;
-//@property (strong, nonatomic) NSDictionary *photoURLResults;
 
-+(void)fetchPlaceImagefromQuake:(Quake*)quake;
++(void)fetchSmallImagefromQuake:(Quake*)quake;
 
 +(void)makeNearbySearchURLfromQuake:(Quake*)quake;
 
