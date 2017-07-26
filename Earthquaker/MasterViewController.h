@@ -12,12 +12,14 @@
 
 @class DetailViewController;
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate,UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating>
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
-
 @property (strong, nonatomic) NSFetchedResultsController<Quake *> *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+
+@property (strong, nonatomic) UISearchController *searchController;
 
 
 @end

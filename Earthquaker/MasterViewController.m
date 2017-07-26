@@ -16,17 +16,24 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
+@property (nonatomic)  NSMutableArray *dataEarthquakes;
+@property (nonatomic)  NSMutableArray *searchResults;
 
 @end
 
 @implementation MasterViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    self.context = self.appDelegate.persistentContainer.viewContext;
-//    [self fetchUSGSData];
+  [super viewDidLoad];
+  self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+  self.context = self.appDelegate.persistentContainer.viewContext;
+  [self fetchUSGSData];
   
+  self.dataEarthquakes = [[NSMutableArray alloc]init];
+  self.searchResults = [[NSMutableArray alloc]init];
+  
+  [self fetchDataFromCoreDataForSearchBarResult];
+  [self setupSearchController];
   
   
     // Do any additional setup after loading the view, typically from a nib.
@@ -71,6 +78,60 @@
 
 
 
+#pragma mark - SearchBar and UISearchController
+
+- (void)setupSearchController {
+  // Setup the Search Controller
+  // following delegates are included in the H file UISearchBarDelegate, UISearchControllerDelegate and UISearchResultsUpdating.
+  
+  self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+  self.searchController.searchResultsUpdater = self; //updater delegate, in H file
+  self.searchController.dimsBackgroundDuringPresentation = NO;
+  self.searchController.searchBar.delegate = self;
+  
+  NSArray *scopeTitles = @[@"All", @"A", @"B"]; //to be used for segmented controls
+  scopeTitles =  self.searchController.searchBar.scopeButtonTitles;
+  
+  self.tableView.tableHeaderView = self.searchController.searchBar;
+  self.definesPresentationContext = YES;
+  [self.searchController.searchBar sizeToFit];
+}
+
+// to get data from coredata into the searchBar for initial character searching
+- (void)fetchDataFromCoreDataForSearchBarResult {
+  NSArray *tempArr  = [self.fetchedResultsController fetchedObjects];
+  
+  for (Quake *quake1 in tempArr) {
+    NSString *quakeDesc = [quake1 valueForKey:@"place"];//to get data from the place attribute of the entity
+    NSLog(@"quake desc %@", quakeDesc);
+    
+    NSMutableArray *tempArr2 = [@[]mutableCopy];
+    if (![quakeDesc isEqual:nil]) {
+      [tempArr2 addObject:quakeDesc];
+      [self.dataEarthquakes arrayByAddingObjectsFromArray: tempArr2];
+    }
+  }
+}
+
+//implementing the required method for the delegate - searchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+  NSString *searchString = searchController.searchBar.text;
+  if (!searchString.length) {
+    self.searchResults =self.dataEarthquakes;
+  } else {
+    // strip out all the leading and trailing spaces
+    NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@",@"size", strippedString];
+    self.searchResults = [self.dataEarthquakes filteredArrayUsingPredicate:resultPredicate];
+    [self.tableView reloadData];
+    
+  }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+  [self updateSearchResultsForSearchController:self.searchController];
+}
+
 
 #pragma mark - Segues
 
@@ -93,18 +154,49 @@
 }
 
 
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+//    return [sectionInfo numberOfObjects];
+//}
+
+
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+//    Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
+////    cell.quake = quake;
+//    [self configureCell:cell withQuake:quake];
+//    return cell;
+//}
+
+
+
+//TODO: made minor update to include the searchBar results
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  if ([tableView isEqual:self.searchController.searchResultsController]) {
+    return self.searchResults.count;
+  } else {
+    
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
+  }
 }
 
-
+//TODO: made minor update to include the searchBar results
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+  QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+  
+  if (cell == nil) {
+    cell = [[QuakeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+  }
+  
+  if ([tableView isEqual:self.searchController.searchResultsController]) {
+    cell.textLabel.text = [self.searchResults objectAtIndex:indexPath.row];
+  } else {
     Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//    cell.quake = quake;
     [self configureCell:cell withQuake:quake];
-    return cell;
+    
+  }
+  return cell;
 }
 
 
@@ -145,13 +237,7 @@
   
   cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
  ;
-
-  
- 
-  
-  
   NSLog(@"formatted time: %@", timeFormatted);
-  
   
 }
 
