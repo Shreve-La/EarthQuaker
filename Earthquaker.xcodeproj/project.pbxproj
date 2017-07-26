@@ -8,7 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		30E618451F26724C0016D26F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E618441F26724C0016D26F /* MapKit.framework */; };
+
+		EDDAFD991F27BC3000B953FD /* APICallerPlaceImage.m in Sources */ = {isa = PBXBuildFile; fileRef = EDDAFD981F27BC3000B953FD /* APICallerPlaceImage.m */; };
+
 		30E6184E1F26EDA90016D26F /* QuakeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E6184D1F26EDA90016D26F /* QuakeCell.m */; };
+
 		EDE887281F25687400634B07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE887271F25687400634B07 /* main.m */; };
 		EDE8872B1F25687500634B07 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE8872A1F25687500634B07 /* AppDelegate.m */; };
 		EDE8872E1F25687500634B07 /* Earthquaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EDE8872C1F25687500634B07 /* Earthquaker.xcdatamodeld */; };
@@ -19,12 +23,20 @@
 		EDE8873C1F25687500634B07 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDE8873A1F25687500634B07 /* LaunchScreen.storyboard */; };
 		EDE8874D1F2583AC00634B07 /* Quake+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE8874A1F2583AC00634B07 /* Quake+CoreDataClass.m */; };
 		EDE8874E1F2583AC00634B07 /* Quake+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE8874C1F2583AC00634B07 /* Quake+CoreDataProperties.m */; };
+		EDE9F2581F283DEF0011917B /* EarthQuakeDataDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F2571F283DEF0011917B /* EarthQuakeDataDownloader.m */; };
+		EDE9F25B1F283E9F0011917B /* EarthQuakeDataSet.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F25A1F283E9F0011917B /* EarthQuakeDataSet.m */; };
+		EDE9F25E1F2842630011917B /* DataDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F25D1F2842630011917B /* DataDownloader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		30E618441F26724C0016D26F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+
+		EDDAFD971F27BC3000B953FD /* APICallerPlaceImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APICallerPlaceImage.h; sourceTree = "<group>"; };
+		EDDAFD981F27BC3000B953FD /* APICallerPlaceImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APICallerPlaceImage.m; sourceTree = "<group>"; };
+
 		30E6184C1F26EDA90016D26F /* QuakeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuakeCell.h; sourceTree = "<group>"; };
 		30E6184D1F26EDA90016D26F /* QuakeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuakeCell.m; sourceTree = "<group>"; };
+
 		EDE887231F25687400634B07 /* Earthquaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Earthquaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDE887271F25687400634B07 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EDE887291F25687400634B07 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -42,6 +54,13 @@
 		EDE8874A1F2583AC00634B07 /* Quake+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Quake+CoreDataClass.m"; sourceTree = "<group>"; };
 		EDE8874B1F2583AC00634B07 /* Quake+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Quake+CoreDataProperties.h"; sourceTree = "<group>"; };
 		EDE8874C1F2583AC00634B07 /* Quake+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Quake+CoreDataProperties.m"; sourceTree = "<group>"; };
+		EDE9F2561F283DEF0011917B /* EarthQuakeDataDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EarthQuakeDataDownloader.h; sourceTree = "<group>"; };
+		EDE9F2571F283DEF0011917B /* EarthQuakeDataDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EarthQuakeDataDownloader.m; sourceTree = "<group>"; };
+		EDE9F2591F283E9F0011917B /* EarthQuakeDataSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EarthQuakeDataSet.h; sourceTree = "<group>"; };
+		EDE9F25A1F283E9F0011917B /* EarthQuakeDataSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EarthQuakeDataSet.m; sourceTree = "<group>"; };
+		EDE9F25C1F2842630011917B /* DataDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataDownloader.h; sourceTree = "<group>"; };
+		EDE9F25D1F2842630011917B /* DataDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataDownloader.m; sourceTree = "<group>"; };
+		EDE9F2601F28CB6B0011917B /* APIKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIKeys.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +116,10 @@
 				EDE887321F25687500634B07 /* DetailViewController.h */,
 				EDE887331F25687500634B07 /* DetailViewController.m */,
 				EDE887351F25687500634B07 /* Main.storyboard */,
+				EDDAFD971F27BC3000B953FD /* APICallerPlaceImage.h */,
+				EDDAFD981F27BC3000B953FD /* APICallerPlaceImage.m */,
+				EDE9F2601F28CB6B0011917B /* APIKeys.h */,
+				EDE9F25F1F2842B40011917B /* EarthQuakeDataDownloader */,
 				EDE887381F25687500634B07 /* Assets.xcassets */,
 				EDE8873A1F25687500634B07 /* LaunchScreen.storyboard */,
 				EDE8873D1F25687500634B07 /* Info.plist */,
@@ -112,6 +135,19 @@
 				EDE887271F25687400634B07 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDE9F25F1F2842B40011917B /* EarthQuakeDataDownloader */ = {
+			isa = PBXGroup;
+			children = (
+				EDE9F2561F283DEF0011917B /* EarthQuakeDataDownloader.h */,
+				EDE9F2571F283DEF0011917B /* EarthQuakeDataDownloader.m */,
+				EDE9F2591F283E9F0011917B /* EarthQuakeDataSet.h */,
+				EDE9F25A1F283E9F0011917B /* EarthQuakeDataSet.m */,
+				EDE9F25C1F2842630011917B /* DataDownloader.h */,
+				EDE9F25D1F2842630011917B /* DataDownloader.m */,
+			);
+			name = EarthQuakeDataDownloader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,7 +181,7 @@
 				TargetAttributes = {
 					EDE887221F25687400634B07 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 4KJC5XPKL6;
+						DevelopmentTeam = 294FN9LFDB;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -186,13 +222,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDE9F25E1F2842630011917B /* DataDownloader.m in Sources */,
 				EDE8874E1F2583AC00634B07 /* Quake+CoreDataProperties.m in Sources */,
 				EDE887341F25687500634B07 /* DetailViewController.m in Sources */,
 				EDE887311F25687500634B07 /* MasterViewController.m in Sources */,
+				EDDAFD991F27BC3000B953FD /* APICallerPlaceImage.m in Sources */,
 				EDE8872E1F25687500634B07 /* Earthquaker.xcdatamodeld in Sources */,
 				EDE8874D1F2583AC00634B07 /* Quake+CoreDataClass.m in Sources */,
 				30E6184E1F26EDA90016D26F /* QuakeCell.m in Sources */,
 				EDE8872B1F25687500634B07 /* AppDelegate.m in Sources */,
+				EDE9F25B1F283E9F0011917B /* EarthQuakeDataSet.m in Sources */,
+				EDE9F2581F283DEF0011917B /* EarthQuakeDataDownloader.m in Sources */,
 				EDE887281F25687400634B07 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,7 +355,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4KJC5XPKL6;
+				DEVELOPMENT_TEAM = 294FN9LFDB;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
@@ -327,7 +367,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4KJC5XPKL6;
+				DEVELOPMENT_TEAM = 294FN9LFDB;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
