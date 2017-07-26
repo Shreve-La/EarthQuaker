@@ -7,14 +7,11 @@
 //
 
 #import "APICallerPlaceImage.h"
-
-
+//#import "APIKeys.h"
 
 @implementation APICallerPlaceImage
 
 static NSString *const GOOGLE_PLACES_KEY = @"";
-
-
 
 #pragma mark - Fetch google nearby places dictionary
 
@@ -29,7 +26,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
 }
 
 
-#pragma mark - Fetch google photo id
+#pragma mark - Fetch google photo id reference#
 
 +(void)callNearbySearchWithQuake:(Quake*)quake {
     NSURL *url = [NSURL URLWithString:quake.nearbySearchURL];
@@ -38,135 +35,95 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest
                                                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"error: %@", error.localizedDescription);
+            if (error) {NSLog(@"error: %@", error.localizedDescription);
                 return ;
             }
             NSError *jsonError = nil;
-    
             NSDictionary *nearbyPlaceData = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
             if (jsonError) {
                 NSLog(@"jsonError: %@", jsonError.localizedDescription);
                 return ;
             }
-            //Retrieve photoReference from dictionary
+                                                    
+            //Retrieve photoReference from dictionary set to coredata object
             quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
             NSLog(@"photoReference: %@", quake.photoReference);
                                                     
-    
                 NSOperationQueue *queue = [[NSOperationQueue alloc] init];
                 [queue addOperationWithBlock:^{
-    
+                    
+             //When complete Build Photo URL
+                    [APICallerPlaceImage makePhotoURLfromQuake:quake];
+                    NSLog(@"Photo Search: %@", quake.photoURL);
+                    [APICallerPlaceImage fetchPlaceImagefromQuake:quake];
+                    
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     }];
                 }];
                                                 }];
-//           [self.appDelegate saveContext];
+    
     [dataTask resume];
-
 }
 
 
 #pragma mark - Make URL to retrieve photo
-//Sample Places API Call: https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=YOUR_API_KEY
-
+//Sample Call to retrieve photo:
 /*
- Sample Google places [api call:]
- ?location=-33.8670522,151.1957362
- &radius=500
- &types=food
- &name=harbour
- &key=YOUR_API_KEY
- content_copy
+        https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=YOUR_API_KEY
  */
-
-
+ 
 +(void)makePhotoURLfromQuake:(Quake*)quake{
     NSString *returnedPhotoReference = quake.photoReference;
-    NSNumber *imageWidth = [NSNumber numberWithInt:400];
+    NSNumber *smlImageWidth = [NSNumber numberWithInt:40];
+    NSNumber *lrgImageWidth = [NSNumber numberWithInt:400];
     NSString *baseUrl = @"https://maps.googleapis.com/maps/api/place/photo?";
-    NSString *maxWidth = [NSString stringWithFormat:@"maxwidth=%@", imageWidth];
+    NSString *smlWidth = [NSString stringWithFormat:@"maxwidth=%@", smlImageWidth];
+    NSString *lrgWidth = [NSString stringWithFormat:@"maxwidth=%@", lrgImageWidth];
     NSString *photoReference = [NSString stringWithFormat:@"&photoreference=%@", returnedPhotoReference];
     NSString *key = [NSString stringWithFormat:@"&key=%@", GOOGLE_PLACES_KEY ];
-    NSURL *placesPhotoRequest =[NSURL URLWithString: [NSString stringWithFormat:@"%@%@%@%@", baseUrl, maxWidth, photoReference, key]];
-    NSLog(@"URL for photo request: %@", placesPhotoRequest);
-
-
+    NSString *smallPhotoRequestURL = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, smlWidth, photoReference, key];
+    NSString *LrgplacesPhotoRequestURL = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, lrgWidth, photoReference, key];
+    quake.photoURL = smallPhotoRequestURL;
+    quake.lrgPhotoURL = LrgplacesPhotoRequestURL
+    NSLog(@"Generated URL for photo request: %@", placesPhotoRequestURL);
 }
 
 
-
-
+#pragma mark - retrieve photo, set on quake.
 +(void)fetchPlaceImagefromQuake:(Quake*)quake{
-
-
+    NSString *urlForLocalPhoto = quake.photoReference;
+    NSURL *url = [NSURL URLWithString:urlForLocalPhoto];
+    NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     
-
-
-
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest
+                                                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                                                    if (error) {NSLog(@"error: %@", error.localizedDescription);
+                                                        return ;
+                                                    }
+                                                    NSError *jsonError = nil;
+                                                    NSDictionary *nearbyPlaceData = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                                                    if (jsonError) {
+                                                        NSLog(@"jsonError: %@", jsonError.localizedDescription);
+                                                        return ;
+                                                    }
+                                                    
+                                                    //Retrieve photoReference from dictionary
+                                                    quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
+                                                    NSLog(@"photoReference: %@", quake.photoReference);
+                                                    
+                                                    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+                                                    [queue addOperationWithBlock:^{
+                                                        
+                                                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                        }];
+                                                    }];
+                                                }];
     
-    
-    
-    
-//    
-//    
-//    NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"];
-//    NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-//    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error: %@", error.localizedDescription);
-//            return ;
-//        }
-//        NSError *jsonError = nil;
-//        
-//        NSDictionary *quakes = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-//        
-//        if (jsonError) {
-//            NSLog(@"jsonError: %@", jsonError.localizedDescription);
-//            return ;
-//        }
-//        NSLog(@"quakes: %@", quakes);
-//        
-//        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-//        
-//        for (NSDictionary *quakeitem in quakes[@"features"]) {
-//            Quake *quake = [[Quake alloc] initWithContext:context];
-//            
-//            quake.place = quakeitem[@"properties"][@"place"];
-//            quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
-//            quake.title = quakeitem[@"properties"][@"title"];
-//            quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
-//            quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
-//            quake.url = quakeitem[@"properties"][@"url"];
-//            
-//            
-//            NSString* temp = quakeitem[@"properties"][@"felt"];
-//            if (![temp isEqual:[NSNull null]]){
-//                quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
-//            }
-//            quake.detail = quakeitem[@"properties"][@"detail"];
-//            
-//            NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
-//            NSLog(@"%@", geometry[0]);
-//            quake.longitude = [geometry[0] doubleValue];
-//            quake.latitude = [geometry[1] doubleValue];
-//            quake.depth = [geometry[2] doubleValue];
-//            
-//            
-//            NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-//            [queue addOperationWithBlock:^{
-//                
-//                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//                }];
-//            }];
-//        }
-//        
-//        
-//        [self.appDelegate saveContext];
-
+    [dataTask resume];
 }
+
 
 
 @end

@@ -2,7 +2,7 @@
 //  Quake+CoreDataProperties.h
 //  Earthquaker
 //
-//  Created by swcl on 2017-07-25.
+//  Created by swcl on 2017-07-26.
 //  Copyright © 2017 Shreve.ca. All rights reserved.
 //
 
@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *nearbySearchURL;
 @property (nullable, nonatomic, copy) NSString *net;
 @property (nonatomic) int16_t nst;
+@property (nullable, nonatomic, copy) NSString *photoReference;
+@property (nullable, nonatomic, copy) NSString *photoURL;
 @property (nullable, nonatomic, copy) NSString *place;
 @property (nonatomic) float rms;
 @property (nonatomic) int16_t sig;
@@ -46,8 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int16_t tz;
 @property (nonatomic) int64_t updated;
 @property (nullable, nonatomic, copy) NSString *url;
-@property (nullable, nonatomic, copy) NSString *photoReference;
-@property (nullable, nonatomic, copy) NSString *photoURL;
+@property (nullable, nonatomic, copy) NSString *lrgPhotoURL;
+@property (nullable, nonatomic, retain) NSData *smallPhoto;
+@property (nullable, nonatomic, retain) NSData *lrgPhoto;
 
 @end
 

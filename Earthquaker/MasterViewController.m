@@ -24,7 +24,7 @@
     [super viewDidLoad];
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
-    [self fetchUSGSData];
+   [self fetchUSGSData];
 }
 
 
@@ -181,7 +181,7 @@
 }
 
 
-#pragma mark - API Caller
+#pragma mark - Fetch USGS Data; add to coredata as a Quake entity
 
 -(void)fetchUSGSData{
 NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"];
@@ -202,10 +202,12 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         NSLog(@"jsonError: %@", jsonError.localizedDescription);
         return ;
     }
-    NSLog(@"quakes: %@", quakes);
+
+//    NSLog(@"quakes: %@", quakes);
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    
+  
+// Process USGS JSON Data and add to coredata.
     for (NSDictionary *quakeitem in quakes[@"features"]) {
         
         Quake *quake = [[Quake alloc] initWithContext:context];
@@ -227,23 +229,23 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.longitude = [geometry[0] doubleValue];
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
-        
+
+// move to deque reusable cell so as not to call unless required
+
+        // get nearby serach url  & Call it
         [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
         NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
         [APICallerPlaceImage callNearbySearchWithQuake:quake];
         NSLog(@"Photo Search: %@", quake.photoReference);
-        
-        [APICallerPlaceImage makePhotoURLfromQuake:quake];
-        NSLog(@"Photo Search: %@", quake.photoURL);
 
-        
-        
-        [APICallerPlaceImage fetchPlaceImagefromQuake:quake];
+     
 
-
+// complete network call
+        
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
         
         [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
+        break;
     }
   
     [self.appDelegate saveContext];

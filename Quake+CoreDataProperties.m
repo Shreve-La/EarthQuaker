@@ -2,7 +2,7 @@
 //  Quake+CoreDataProperties.m
 //  Earthquaker
 //
-//  Created by swcl on 2017-07-25.
+//  Created by swcl on 2017-07-26.
 //  Copyright © 2017 Shreve.ca. All rights reserved.
 //
 
@@ -32,6 +32,8 @@
 @dynamic nearbySearchURL;
 @dynamic net;
 @dynamic nst;
+@dynamic photoReference;
+@dynamic photoURL;
 @dynamic place;
 @dynamic rms;
 @dynamic sig;
@@ -45,7 +47,8 @@
 @dynamic tz;
 @dynamic updated;
 @dynamic url;
-@dynamic photoReference;
-@dynamic photoURL;
+@dynamic lrgPhotoURL;
+@dynamic smallPhoto;
+@dynamic lrgPhoto;
 
 @end
