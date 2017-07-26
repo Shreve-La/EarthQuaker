@@ -27,15 +27,12 @@
   [super viewDidLoad];
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
-  [self fetchUSGSData];
+  
+//  [self fetchUSGSData];
   [self.tableView reloadData];
-//  self.dataEarthquakes = @[];
-//  self.searchResults = @[];
-//  
-//  [self fetchDataFromCoreDataForSearchBarResult];
+  self.dataEarthquakes = @[];
+  self.searchResults = @[];
   [self setupSearchController];
-
-//  self.dataEarthquakes  = [self.fetchedResultsController fetchedObjects];
 
   
     // Do any additional setup after loading the view, typically from a nib.
@@ -91,7 +88,7 @@
   self.searchController.dimsBackgroundDuringPresentation = NO;
   self.searchController.searchBar.delegate = self;
   
-  NSArray *scopeTitles = @[@"All", @"A", @"B"]; //to be used for segmented controls
+  NSArray *scopeTitles = @[@"all", @"mag", @"felt"]; //to be used for segmented controls
   scopeTitles =  self.searchController.searchBar.scopeButtonTitles;
   
   self.tableView.tableHeaderView = self.searchController.searchBar;
@@ -108,12 +105,16 @@
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@",@"place", strippedString];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"place", strippedString];
     self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
-    [self.fetchedResultsController performFetch:nil];
-//    self.searchResults = [self.dataEarthquakes filteredArrayUsingPredicate:resultPredicate];
+    NSError *err = nil;
+    [self.fetchedResultsController performFetch:&err];
+    if (err != nil) {
+      NSLog(@"Error searching: %@", err.localizedDescription);
+      abort();
+    }
     [self.tableView reloadData];
-    
+  
   }
 }
 
@@ -142,35 +143,12 @@
     return [[self.fetchedResultsController sections] count];
 }
 
-
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-//    return [sectionInfo numberOfObjects];
-//}
-
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-//    Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
-////    cell.quake = quake;
-//    [self configureCell:cell withQuake:quake];
-//    return cell;
-//}
-
-
-
-//TODO: made minor update to include the searchBar results
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  if ([tableView isEqual:self.searchController.searchResultsController]) {
-    return self.searchResults.count;
-  } else {
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
-  }
+  
+  id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+  return [sectionInfo numberOfObjects];
 }
 
-//TODO: made minor update to include the searchBar results
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   QuakeCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
   
@@ -178,13 +156,9 @@
     cell = [[QuakeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
   }
   
-  if ([tableView isEqual:self.searchController.searchResultsController]) {
-    cell.textLabel.text = [self.searchResults objectAtIndex:indexPath.row];
-  } else {
-    Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self configureCell:cell withQuake:quake];
-    
-  }
+  Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
+  [self configureCell:cell withQuake:quake];
+  
   return cell;
 }
 
@@ -249,7 +223,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController<Quake *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController<Quake *> *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     
     NSError *error = nil;
