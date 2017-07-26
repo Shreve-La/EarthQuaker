@@ -29,6 +29,7 @@
 @dynamic mag;
 @dynamic magType;
 @dynamic mmi;
+@dynamic nearbySearchURL;
 @dynamic net;
 @dynamic nst;
 @dynamic place;
@@ -44,6 +45,7 @@
 @dynamic tz;
 @dynamic updated;
 @dynamic url;
-@dynamic nearbySearchURL;
+@dynamic photoReference;
+@dynamic photoURL;
 
 @end

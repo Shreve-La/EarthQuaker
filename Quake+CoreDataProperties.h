@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) double mag;
 @property (nullable, nonatomic, copy) NSString *magType;
 @property (nonatomic) float mmi;
+@property (nullable, nonatomic, copy) NSString *nearbySearchURL;
 @property (nullable, nonatomic, copy) NSString *net;
 @property (nonatomic) int16_t nst;
 @property (nullable, nonatomic, copy) NSString *place;
@@ -45,7 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int16_t tz;
 @property (nonatomic) int64_t updated;
 @property (nullable, nonatomic, copy) NSString *url;
-@property (nullable, nonatomic, copy) NSString *nearbySearchURL;
+@property (nullable, nonatomic, copy) NSString *photoReference;
+@property (nullable, nonatomic, copy) NSString *photoURL;
 
 @end
 

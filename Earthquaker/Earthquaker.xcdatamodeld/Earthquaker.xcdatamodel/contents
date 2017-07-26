@@ -25,6 +25,8 @@
         <attribute name="nearbySearchURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="net" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nst" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="photoReference" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photoURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="place" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="rms" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sig" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -41,6 +43,6 @@
     </entity>
     <elements>
         <element name="Event" positionX="261" positionY="189" width="128" height="60"/>
-        <element name="Quake" positionX="297" positionY="234" width="128" height="510"/>
+        <element name="Quake" positionX="297" positionY="234" width="128" height="540"/>
     </elements>
 </model>

@@ -8,6 +8,7 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "APICallerPlaceImage.h"
 #import "AppDelegate.h"
 
 @interface MasterViewController ()
@@ -24,7 +25,6 @@
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.context = self.appDelegate.persistentContainer.viewContext;
     [self fetchUSGSData];
-
 }
 
 
@@ -217,7 +217,6 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.updated = [quakeitem[@"properties"][@"updated"] intValue];
         quake.url = quakeitem[@"properties"][@"url"];
         
-        
         NSString* temp = quakeitem[@"properties"][@"felt"];
         if (![temp isEqual:[NSNull null]]){
             quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
@@ -225,26 +224,31 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.detail = quakeitem[@"properties"][@"detail"];
         
         NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
-        NSLog(@"%@", geometry[0]);
         quake.longitude = [geometry[0] doubleValue];
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
         
         [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
-        NSLog(@"%@", quake.nearbySearchURL);
+        NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
+        [APICallerPlaceImage callNearbySearchWithQuake:quake];
+        NSLog(@"Photo Search: %@", quake.photoReference);
+        
+        [APICallerPlaceImage makePhotoURLfromQuake:quake];
+        NSLog(@"Photo Search: %@", quake.photoURL);
+
         
         
-        
+        [APICallerPlaceImage fetchPlaceImagefromQuake:quake];
+
+
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-        [queue addOperationWithBlock:^{
-            
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            }];
-        }];
+        
+        [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
     }
   
     [self.appDelegate saveContext];
     [self.tableView reloadData];
+    
 }];
 
 [dataTask resume];

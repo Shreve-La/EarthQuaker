@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "Quake+CoreDataClass.h"
-#import "APICallerPlaceImage.h"
 
 
 @class DetailViewController;
