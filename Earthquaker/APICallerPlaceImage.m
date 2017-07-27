@@ -48,14 +48,14 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
                    
                    //Retrieve photoReference from dictionary set to coredata object
                    quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
-                   NSLog(@"photoReference: %@", quake.photoReference);
+//                   NSLog(@"photoReference: %@", quake.photoReference);
                    
                    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
                    [queue addOperationWithBlock:^{
                        
                        //When complete Build Photo URL
                        [APICallerPlaceImage makePhotoURLfromQuake:quake];
-                       NSLog(@"Photo Search: %@", quake.photoURL);
+//                     NSLog(@"Photo Search: %@", quake.photoURL);
                        [APICallerPlaceImage fetchSmallImagefromQuake:quake];
                        
                      
@@ -85,7 +85,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
     NSString *LrgplacesPhotoRequestURL = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, lrgWidth, photoReference, key];
     quake.photoURL = smallPhotoRequestURL;
     quake.lrgPhotoURL = LrgplacesPhotoRequestURL;
-    NSLog(@"Generated URL for photo request: %@", LrgplacesPhotoRequestURL);
+//    NSLog(@"Generated URL for photo request: %@", LrgplacesPhotoRequestURL);
 }
 
 
@@ -104,7 +104,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
                                                     }
                                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                         quake.smallPhoto = data;
-                                                        NSLog(@"%@", quake.smallPhoto);
+//                                                        NSLog(@"%@", quake.smallPhoto);
                                                         AppDelegate *del = (AppDelegate*)[UIApplication sharedApplication].delegate;
                                                         [del saveContext];
                                                     }];

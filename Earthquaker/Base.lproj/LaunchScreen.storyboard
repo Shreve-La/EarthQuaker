@@ -24,12 +24,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6di-lr-lrp">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Gandaki — Nepal Maps, Today at 11.45.24 PM" translatesAutoresizingMaskIntoConstraints="NO" id="vvj-ho-rLJ">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
-                                        </accessibility>
-                                    </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="EARTH" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKX-yS-P5w">
                                         <rect key="frame" x="0.0" y="-12" width="375" height="163"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -50,13 +44,21 @@
                                         <color key="textColor" red="0.84444671110000002" green="0.8753665571" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RealTimeEarthData copy4" translatesAutoresizingMaskIntoConstraints="NO" id="vvj-ho-rLJ">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+                                        </accessibility>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="vvj-ho-rLJ" secondAttribute="trailing" id="2w3-Sk-gFL"/>
+                                    <constraint firstItem="vvj-ho-rLJ" firstAttribute="centerX" secondItem="6di-lr-lrp" secondAttribute="centerX" id="Hzk-4H-Ixi"/>
                                     <constraint firstAttribute="bottom" secondItem="vvj-ho-rLJ" secondAttribute="bottom" id="MvO-xC-V1J"/>
                                     <constraint firstItem="vvj-ho-rLJ" firstAttribute="leading" secondItem="6di-lr-lrp" secondAttribute="leading" id="gZG-lz-0ez"/>
                                     <constraint firstItem="vvj-ho-rLJ" firstAttribute="top" secondItem="6di-lr-lrp" secondAttribute="top" id="i0o-7c-YrI"/>
+                                    <constraint firstItem="vvj-ho-rLJ" firstAttribute="centerY" secondItem="6di-lr-lrp" secondAttribute="centerY" id="y1b-6a-2SJ"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -75,6 +77,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Gandaki — Nepal Maps, Today at 11.45.24 PM" width="1550" height="1678"/>
+        <image name="RealTimeEarthData copy4" width="1550" height="1678"/>
     </resources>
 </document>

@@ -29,7 +29,7 @@
   [super viewDidLoad];
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
-  [self fetchUSGSData];
+//  [self fetchUSGSData];
   [self.tableView reloadData];
   self.dataEarthquakes = @[];
   self.searchResults = @[];
@@ -103,6 +103,7 @@
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
+
 }
 
 
@@ -338,6 +339,10 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
 [dataTask resume];
 
 }
+
+
+
+
 
 
 /*
