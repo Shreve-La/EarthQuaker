@@ -162,13 +162,20 @@
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
   [formatter setDateStyle:NSDateFormatterMediumStyle];
   [formatter setTimeStyle:NSDateFormatterShortStyle];
+    
+    if(!quake.nearbySearchURL){
+        [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
+    }
+
+    [APICallerPlaceImage callNearbySearchWithQuake:quake];
+//    cell.quakeImage.image = [UIImage imageWithData:quake.smallPhoto];
   
     cell.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", quake.mag];
     cell.titleQuakeLabel.text = quake.title;
     cell.placeLabel.text = quake.place;
-  
-  cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
- ;
+    cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
+    
+ 
   NSLog(@"formatted time: %@", timeFormatted);
   
 }
@@ -311,11 +318,7 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         // get nearby serach url  & Call it
         [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
         NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
-        [APICallerPlaceImage callNearbySearchWithQuake:quake];
-        NSLog(@"Photo Search: %@", quake.photoReference);
-
-     
-
+        
 // complete network call
         
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
