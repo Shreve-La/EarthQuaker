@@ -23,6 +23,7 @@
 		EDE9F2581F283DEF0011917B /* EarthQuakeDataDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F2571F283DEF0011917B /* EarthQuakeDataDownloader.m */; };
 		EDE9F25B1F283E9F0011917B /* EarthQuakeDataSet.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F25A1F283E9F0011917B /* EarthQuakeDataSet.m */; };
 		EDE9F25E1F2842630011917B /* DataDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F25D1F2842630011917B /* DataDownloader.m */; };
+		EDE9F2A41F2A74A00011917B /* photoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDE9F2A31F2A74A00011917B /* photoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,8 @@
 		EDE9F25C1F2842630011917B /* DataDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataDownloader.h; sourceTree = "<group>"; };
 		EDE9F25D1F2842630011917B /* DataDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataDownloader.m; sourceTree = "<group>"; };
 		EDE9F2601F28CB6B0011917B /* APIKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIKeys.h; sourceTree = "<group>"; };
+		EDE9F2A21F2A74A00011917B /* photoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = photoViewController.h; sourceTree = "<group>"; };
+		EDE9F2A31F2A74A00011917B /* photoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = photoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,8 @@
 				EDE887331F25687500634B07 /* DetailViewController.m */,
 				EDE8872F1F25687500634B07 /* MasterViewController.h */,
 				EDE887301F25687500634B07 /* MasterViewController.m */,
+				EDE9F2A21F2A74A00011917B /* photoViewController.h */,
+				EDE9F2A31F2A74A00011917B /* photoViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 				EDE9F25E1F2842630011917B /* DataDownloader.m in Sources */,
 				EDE8874E1F2583AC00634B07 /* Quake+CoreDataProperties.m in Sources */,
 				EDE887341F25687500634B07 /* DetailViewController.m in Sources */,
+				EDE9F2A41F2A74A00011917B /* photoViewController.m in Sources */,
 				EDE887311F25687500634B07 /* MasterViewController.m in Sources */,
 				EDDAFD991F27BC3000B953FD /* APICallerPlaceImage.m in Sources */,
 				EDE8872E1F25687500634B07 /* Earthquaker.xcdatamodeld in Sources */,

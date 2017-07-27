@@ -51,15 +51,24 @@
 }
 
 - (void)quakeLocationData {
-  
-  double longitude  = self.detailItem.longitude;
-  double latitude = self.detailItem.latitude;
-  
-   self.quakeLocation = CLLocationCoordinate2DMake(latitude, longitude);
 
+    double longitude  = self.detailItem.longitude;
+    double latitude = self.detailItem.latitude;
+    self.quakeLocation = CLLocationCoordinate2DMake(latitude, longitude);
+    self.quakeLocationMap.showsPointsOfInterest = YES;
+    
+    MKPointAnnotation *quakePoint = [[MKPointAnnotation alloc] init];
+    quakePoint.coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+    MKCoordinateSpan span = MKCoordinateSpanMake(4.0f, 4.0f);
+    self.quakeLocationMap.region = MKCoordinateRegionMake(quakePoint.coordinate, span);
+    [self.quakeLocationMap addAnnotation:quakePoint];
+    
+    
+    
     self.latitudeLabel.text = [NSString stringWithFormat:@"Latitude: %f", self.quakeLocation.latitude];
     self.longitudeLabel.text = [NSString stringWithFormat:@"Longitude: %f", self.quakeLocation.longitude];
-  
+
+    
 //    [self setMapView];
   
 }
