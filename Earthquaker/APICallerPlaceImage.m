@@ -11,7 +11,7 @@
 
 @implementation APICallerPlaceImage
 
-static NSString *const GOOGLE_PLACES_KEY = @"";
+static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTyeMw_k";
 
 #pragma mark - Fetch google nearby places dictionary
 
@@ -74,7 +74,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
  
 +(void)makePhotoURLfromQuake:(Quake*)quake{
     NSString *returnedPhotoReference = quake.photoReference;
-    NSNumber *smlImageWidth = [NSNumber numberWithInt:40];
+    NSNumber *smlImageWidth = [NSNumber numberWithInt:60];
     NSNumber *lrgImageWidth = [NSNumber numberWithInt:400];
     NSString *baseUrl = @"https://maps.googleapis.com/maps/api/place/photo?";
     NSString *smlWidth = [NSString stringWithFormat:@"maxwidth=%@", smlImageWidth];

@@ -29,7 +29,7 @@
   [super viewDidLoad];
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
-//  [self fetchUSGSData];
+  [self fetchUSGSData];
   [self.tableView reloadData];
   self.dataEarthquakes = @[];
   self.searchResults = @[];
@@ -156,7 +156,6 @@
 
 - (void)configureCell:(QuakeCell *)cell withQuake:(Quake *)quake {
   
-//    cell.textLabel.text = quake.title;
   
   NSDate *timeFormatted = [NSDate dateWithTimeIntervalSince1970:quake.time/1000];
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -166,10 +165,8 @@
     cell.magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", quake.mag];
     cell.titleQuakeLabel.text = quake.title;
     cell.placeLabel.text = quake.place;
-  
-  cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
- ;
-  NSLog(@"formatted time: %@", timeFormatted);
+    cell.timeLabel.text = [formatter stringFromDate:timeFormatted];
+    cell.quakeImageView.image = [UIImage imageWithData:(NSData*)quake.smallPhoto];
   
 }
 
@@ -286,8 +283,22 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
 // Process USGS JSON Data and add to coredata.
     for (NSDictionary *quakeitem in quakes[@"features"]) {
         
-        Quake *quake = [[Quake alloc] initWithContext:context];
+
+// Check if JSON quakeitem is already in core data. if yes, move on to next record.
+            NSString *url = quakeitem[@"properties"][@"url"];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.url == %@", url];
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Quake"];
+            request.predicate = predicate;
         
+            NSArray <Quake *>*fetchedQuakes = [self.context executeFetchRequest:request error:nil];
+            if(fetchedQuakes.count){
+            NSLog(@"Match Found: %lu", (unsigned long)quakes.count);
+            continue;
+            }else{NSLog(@"Match Not Found: %lu", quakes.count);}
+        
+// Unique records generate a new object with properties from JSON
+        Quake *quake = [[Quake alloc] initWithContext:context];
+
         quake.place = quakeitem[@"properties"][@"place"];
         quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
         quake.title = quakeitem[@"properties"][@"title"];
@@ -306,28 +317,22 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
 
-// move to deque reusable cell so as not to call unless required
-
-        // get nearby serach url  & Call it
+// get nearby serach url & Call it to get image url which will then be called
         [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
         NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
         [APICallerPlaceImage callNearbySearchWithQuake:quake];
         NSLog(@"Photo Search: %@", quake.photoReference);
 
      
-
 // complete network call
-        
-        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-        
-        [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
-        break;
+//        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+//        [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
+ 
+    break; // for testing to avoid api limits
     }
   
     [self.appDelegate saveContext];
-
     [self.tableView reloadData];
-    
 }];
 
 [dataTask resume];
