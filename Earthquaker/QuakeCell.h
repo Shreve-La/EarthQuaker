@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *placeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *titleQuakeLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *quakeImageView;
 
 
 @property (nonatomic, strong) Quake *quake;
