@@ -11,7 +11,7 @@
 
 @implementation APICallerPlaceImage
 
-static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTyeMw_k";
+static NSString *const GOOGLE_PLACES_KEY = @"";
 
 #pragma mark - Fetch google nearby places dictionary
 
