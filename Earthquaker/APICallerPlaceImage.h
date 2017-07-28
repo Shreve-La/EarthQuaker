@@ -19,9 +19,9 @@
 
 +(void)fetchSmallImagefromQuake:(Quake*)quake;
 
-+(void)makeNearbySearchURLfromQuake:(Quake*)quake;
++(NSString*)makeNearbySearchURLfromQuake:(Quake*)quake;
 
-+(void)makePhotoURLfromQuake:(Quake*)quake;
++(NSString*)makePhotoURLfromQuake:(Quake*)quake;
 
 +(void)callNearbySearchWithQuake:(Quake*)quake;
 

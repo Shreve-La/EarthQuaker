@@ -216,7 +216,7 @@
 				TargetAttributes = {
 					EDE887221F25687400634B07 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 4KJC5XPKL6;
+						DevelopmentTeam = 294FN9LFDB;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -391,7 +391,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4KJC5XPKL6;
+				DEVELOPMENT_TEAM = 294FN9LFDB;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
@@ -403,7 +403,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4KJC5XPKL6;
+				DEVELOPMENT_TEAM = 294FN9LFDB;
 				INFOPLIST_FILE = Earthquaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.shreve.Earthquaker;
