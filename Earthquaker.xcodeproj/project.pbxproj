@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		306BC4D11F2AF129004F0A2B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 306BC4D01F2AF129004F0A2B /* QuartzCore.framework */; };
 		30E618451F26724C0016D26F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E618441F26724C0016D26F /* MapKit.framework */; };
 		30E6184E1F26EDA90016D26F /* QuakeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E6184D1F26EDA90016D26F /* QuakeCell.m */; };
 		EDDAFD991F27BC3000B953FD /* APICallerPlaceImage.m in Sources */ = {isa = PBXBuildFile; fileRef = EDDAFD981F27BC3000B953FD /* APICallerPlaceImage.m */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		306BC4D01F2AF129004F0A2B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		30E618441F26724C0016D26F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		30E6184C1F26EDA90016D26F /* QuakeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuakeCell.h; sourceTree = "<group>"; };
 		30E6184D1F26EDA90016D26F /* QuakeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuakeCell.m; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				306BC4D11F2AF129004F0A2B /* QuartzCore.framework in Frameworks */,
 				30E618451F26724C0016D26F /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -124,6 +127,7 @@
 		30E618431F26724B0016D26F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				306BC4D01F2AF129004F0A2B /* QuartzCore.framework */,
 				30E618441F26724C0016D26F /* MapKit.framework */,
 			);
 			name = Frameworks;
