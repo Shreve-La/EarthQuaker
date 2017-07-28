@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *titleQuakeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *magnitudeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *colorLabelMag;
 
 @end
 
@@ -36,6 +37,19 @@
       [formatter setTimeStyle:NSDateFormatterShortStyle];
       
       self.timeLabel.text = [formatter stringFromDate:timeFormatted];
+      
+      // set color code for magnitude label baed on the magnitude value
+      int magValue = [self.magnitudeLabel.text intValue];
+      
+      if ( magValue >= 6) {
+        self.colorLabelMag.backgroundColor = [UIColor brownColor];
+      } else if ( magValue >= 4) {
+        self.colorLabelMag.backgroundColor = [UIColor redColor];
+      } else if ( magValue >= 2) {
+        self.colorLabelMag.backgroundColor = [UIColor yellowColor];
+      } else {
+        self.colorLabelMag.backgroundColor = [UIColor greenColor];
+      }
       
     }
 }

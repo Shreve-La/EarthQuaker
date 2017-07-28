@@ -310,19 +310,21 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   cell.quakeImageView.layer.masksToBounds = YES;
   
   cell.magnitudeLabel.textColor = [UIColor blackColor];
-  cell.magnitudeLabel.layer.cornerRadius = 24;
-  cell.magnitudeLabel.layer.masksToBounds = YES;
+//  cell.magnitudeLabel.layer.cornerRadius = 24;
+//  cell.magnitudeLabel.layer.masksToBounds = YES;
+  
+  
 
   int magValue = [cell.magnitudeLabel.text intValue];
   
   if ( magValue >= 6) {
-    cell.magnitudeLabel.backgroundColor = [UIColor brownColor];
+    cell.colorLabelMag.backgroundColor = [UIColor brownColor];
   } else if ( magValue >= 4) {
-    cell.magnitudeLabel.backgroundColor = [UIColor redColor];
+    cell.colorLabelMag.backgroundColor = [UIColor redColor];
   } else if ( magValue >= 2) {
-    cell.magnitudeLabel.backgroundColor = [UIColor yellowColor];
+    cell.colorLabelMag.backgroundColor = [UIColor yellowColor];
   } else {
-    cell.magnitudeLabel.backgroundColor = [UIColor greenColor];
+    cell.colorLabelMag.backgroundColor = [UIColor greenColor];
   }
   
   return cell;
