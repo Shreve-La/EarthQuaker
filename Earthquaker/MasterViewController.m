@@ -223,7 +223,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"place", strippedString];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"title", strippedString];
     self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
     NSError *err = nil;
     [self.fetchedResultsController performFetch:&err];
@@ -299,6 +299,10 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   
   Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
   [self configureCell:cell withQuake:quake];
+    if (!quake.smallPhoto){
+    [APICallerPlaceImage callNearbySearchWithQuake:(Quake*)quake];
+    }
+
   
   return cell;
 }
@@ -355,7 +359,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO];
 
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
@@ -429,14 +433,14 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
 #pragma mark - Fetch USGS Data; add to coredata as a Quake entity
 
 -(void)fetchUSGSData{
+    
 NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"];
 NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
 NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     
-NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    if (error) {
-        NSLog(@"error: %@", error.localizedDescription);
+NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
+        if (error) {NSLog(@"error: %@", error.localizedDescription);
         return ;
     }
     NSError *jsonError = nil;
@@ -448,25 +452,27 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         return ;
     }
 
-//    NSLog(@"quakes: %@", quakes);
+    //    NSLog(@"quakes: %@", quakes);
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
   
-// Process USGS JSON Data and add to coredata.
+    // Process USGS JSON Data and add to coredata.
     for (NSDictionary *quakeitem in quakes[@"features"]) {
         
 
 // Check if JSON quakeitem is already in core data. if yes, move on to next record.
             NSString *url = quakeitem[@"properties"][@"url"];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.url == %@", url];
+        NSLog(@"%@", url);
+        NSLog(@"%@", predicate);
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Quake"];
             request.predicate = predicate;
-        
-            NSArray <Quake *>*fetchedQuakes = [self.context executeFetchRequest:request error:nil];
+            NSArray <Quake *>* fetchedQuakes = [self.context executeFetchRequest:request error:nil];
             if(fetchedQuakes.count){
-            NSLog(@"Match Found: %lu", (unsigned long)quakes.count);
+                NSLog(@"Match Found: %@", [NSNumber numberWithLong: quakes.count]);
             continue;
             }else{NSLog(@"Match Not Found: %lu", quakes.count);}
+        
         
 // Unique records generate a new object with properties from JSON
         Quake *quake = [[Quake alloc] initWithContext:context];
@@ -479,47 +485,40 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.url = quakeitem[@"properties"][@"url"];
         
         NSString* temp = quakeitem[@"properties"][@"felt"];
-        if (![temp isEqual:[NSNull null]]){
+            if (![temp isEqual:[NSNull null]]){
             quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
-        }
+            }
         quake.detail = quakeitem[@"properties"][@"detail"];
-        
         NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
         quake.longitude = [geometry[0] doubleValue];
         quake.latitude = [geometry[1] doubleValue];
         quake.depth = [geometry[2] doubleValue];
-
-// get nearby serach url & Call it to get image url which will then be called
-        [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
-        NSLog(@"Nearby Search: %@", quake.nearbySearchURL);
-        [APICallerPlaceImage callNearbySearchWithQuake:quake];
-        NSLog(@"Photo Search: %@", quake.photoReference);
-
-     
-// complete network call
-//        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-//        [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{}];}];
- 
-    break; // for testing to avoid api limits
-    }
-  
+        // Make url for Google Nearby Places API
+        quake.nearbySearchURL = [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
+        NSLog(@"nearbySearchURL: %@", quake.nearbySearchURL);
+            }
+    
+//    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+//    [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//    [APICallerPlaceImage callNearbySearchWithQuake:(Quake*)quake];
+//    }];
+//    }];
+    
     [self.appDelegate saveContext];
     [self.tableView reloadData];
-}];
 
+    }];
+    
 [dataTask resume];
-
 }
 
+        
 
 
 
 
 
-/*
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];}
-*/
+
+
 
 @end

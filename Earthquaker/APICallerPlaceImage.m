@@ -11,18 +11,19 @@
 
 @implementation APICallerPlaceImage
 
-static NSString *const GOOGLE_PLACES_KEY = @"";
+static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTyeMw_k";
 
 #pragma mark - Fetch google nearby places dictionary
 
-+(void)makeNearbySearchURLfromQuake:(Quake*)quake{
++(NSString*)makeNearbySearchURLfromQuake:(Quake*)quake{
     NSString *baseURL = @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
     NSString *lat = [NSString stringWithFormat:@"%f,", quake.latitude];
     NSString *longitute = [NSString stringWithFormat:@"%f", quake.longitude];
     NSString *radius = @"&radius=50000";
     NSString *key = [NSString stringWithFormat:@"&key=%@", GOOGLE_PLACES_KEY];
     NSString *newURL = [NSString stringWithFormat:@"%@%@%@%@%@", baseURL, lat, longitute, radius, key];
-    quake.nearbySearchURL = newURL;
+    //    NSLog(@"nearby search %@", newURL);
+    return newURL;
 }
 
 
@@ -47,21 +48,23 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
                    }
                    
                    //Retrieve photoReference from dictionary set to coredata object
-                   quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
-//                   NSLog(@"photoReference: %@", quake.photoReference);
+                   if(nearbyPlaceData[@"results"]){
+                       quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
+                       NSLog(@"photoReference: %@", quake.photoReference);
+                   }else{
+                       NSLog(@"no photoreference");
+                   }
                    
                    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
                    [queue addOperationWithBlock:^{
-                       
                        //When complete Build Photo URL
-                       [APICallerPlaceImage makePhotoURLfromQuake:quake];
-//                     NSLog(@"Photo Search: %@", quake.photoURL);
+                       NSLog(@"Quake was passed reference is %@", quake.photoReference);
+                       quake.photoURL = [APICallerPlaceImage makePhotoURLfromQuake:quake];
+                       NSLog(@"Photo Search: %@", quake.photoURL);
                        [APICallerPlaceImage fetchSmallImagefromQuake:quake];
-                       
-                     
                    }];
+                   
                }];
-    
     [dataTask resume];
 }
 
@@ -69,10 +72,10 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
 #pragma mark - Make URLs to retrieve small and large photo
 //Sample Call to retrieve photo:
 /*
-        https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=YOUR_API_KEY
+ https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=YOUR_API_KEY
  */
- 
-+(void)makePhotoURLfromQuake:(Quake*)quake{
+
++ (NSString *)makePhotoURLfromQuake:(Quake*)quake{
     NSString *returnedPhotoReference = quake.photoReference;
     NSNumber *smlImageWidth = [NSNumber numberWithInt:60];
     NSNumber *lrgImageWidth = [NSNumber numberWithInt:400];
@@ -80,13 +83,13 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
     NSString *smlWidth = [NSString stringWithFormat:@"maxwidth=%@", smlImageWidth];
     NSString *lrgWidth = [NSString stringWithFormat:@"maxwidth=%@", lrgImageWidth];
     NSString *photoReference = [NSString stringWithFormat:@"&photoreference=%@", returnedPhotoReference];
+    NSLog(@"PHOTO REFERENCE: %@ /n", photoReference);
     NSString *key = [NSString stringWithFormat:@"&key=%@", GOOGLE_PLACES_KEY ];
     NSString *smallPhotoRequestURL = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, smlWidth, photoReference, key];
-    NSString *LrgplacesPhotoRequestURL = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, lrgWidth, photoReference, key];
-    quake.photoURL = smallPhotoRequestURL;
-    quake.lrgPhotoURL = LrgplacesPhotoRequestURL;
-//    NSLog(@"Generated URL for photo request: %@", LrgplacesPhotoRequestURL);
+    return smallPhotoRequestURL;
 }
+
+
 
 
 #pragma mark - Fetch small photo, from URL attribute on quake.
@@ -104,7 +107,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"";
                                                     }
                                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                         quake.smallPhoto = data;
-//                                                        NSLog(@"%@", quake.smallPhoto);
+                                                        //                                                        NSLog(@"%@", quake.smallPhoto);
                                                         AppDelegate *del = (AppDelegate*)[UIApplication sharedApplication].delegate;
                                                         [del saveContext];
                                                     }];
