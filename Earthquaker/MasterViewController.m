@@ -12,6 +12,12 @@
 #import "AppDelegate.h"
 #import "QuakeCell.h"
 
+typedef NS_ENUM(NSInteger, ScopeIndexes) {
+  kAllScope = 0,
+  kMagnitudeScope,
+  kFeltScope
+  
+};
 
 @interface MasterViewController ()
 
@@ -19,6 +25,22 @@
 
 @property (nonatomic)  NSArray *dataEarthquakes;
 @property (nonatomic)  NSArray *searchResults;
+
+
+@property (nonatomic, strong) NSMutableArray *quakesDataAll;   // all quakes data
+@property (nonatomic, strong) NSMutableArray *searchedQuakesData;  // all quakes data found based on the search bar's scope
+@property (nonatomic, strong) NSArray *filteredQuakesData;  // data currently being filtered in and out while typing in the search bar
+
+// for state restoration
+@property BOOL restoringSearchState;
+@property BOOL searchControllerWasActive;
+@property BOOL searchControllerSearchFieldWasFirstResponder;
+@property (nonatomic, strong) NSString *searchControllerText;
+@property (assign) NSInteger searchControllerScopeIndex;
+
+@property BOOL searchControllerActiveFromPreviousView;
+
+
 
 @end
 
@@ -29,12 +51,33 @@
   [super viewDidLoad];
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
-//  [self fetchUSGSData];
-  [self.tableView reloadData];
+  [self fetchUSGSData];
   self.dataEarthquakes = @[];
   self.searchResults = @[];
-  [self setupSearchController];
-
+//  [self setupSearchController];
+  [self.tableView reloadData];
+self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
+  
+  
+  // setup our search display controller
+  //
+  _searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+  self.searchController.searchResultsUpdater = self;
+  [self.searchController.searchBar sizeToFit];
+  self.tableView.tableHeaderView = self.searchController.searchBar;
+  
+  self.searchController.delegate = self;
+  self.searchController.dimsBackgroundDuringPresentation = NO; // default is YES
+  
+  self.searchController.searchBar.delegate = self; // so we can monitor text changes + others
+  self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+  
+  // Search is now just presenting a view controller. As such, normal view controller
+  // presentation semantics apply. Namely that presentation will walk up the view controller
+  // hierarchy until it finds the root view controller or one that defines a presentation context.
+  //
+  self.definesPresentationContext = YES;  // know where you want UISearchController to be displayed
+  
 }
 
 
@@ -43,7 +86,113 @@
     [super viewWillAppear:animated];
 }
 
+#pragma mark - UISearchBarDelegate
 
+// called when UISearchBar's keyboard search button pressed
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+  // all we do here is dismiss the keyboard
+  [searchBar resignFirstResponder];
+}
+
+//- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+//  [self updateSearchResultsForSearchController:self.searchController];
+//}
+
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+{
+  // user tapped the scope bar, toggling between: All, Mine, Recents, or Near Me, to change the search criteria
+  if (self.quakesDataAll.count > 0)
+  {
+    switch (self.searchController.searchBar.selectedScopeButtonIndex)
+    {
+      case kAllScope:
+      {
+        // search all data
+        [self searchAll];
+        break;
+      }
+        
+      case kMagnitudeScope:
+      {
+        // search for data by magnitude
+        [self searchMagnitude];
+        break;
+      }
+        
+      case kFeltScope:
+      {
+        // find data by felt
+        [self searchFelt];
+        break;
+      }
+        
+    }
+  }
+  
+}
+
+
+
+- (void)searchAll
+{
+  // search for all data
+    [self updateSearchResultsForSearchController:self.searchController];
+
+}
+
+- (void)searchMagnitude {
+   // start the search with predicate
+  
+//      NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"%K == %@", @"creatorUserRecordID", ourLoggedInRecordID];
+//
+  
+  NSString *searchString = _searchController.searchBar.text;
+  if (!searchString.length) {
+    self.searchResults =self.dataEarthquakes;
+  } else {
+    // strip out all the leading and trailing spaces
+    NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"mag", strippedString];
+    self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
+    NSError *err = nil;
+    [self.fetchedResultsController performFetch:&err];
+    if (err != nil) {
+      NSLog(@"Error searching: %@", err.localizedDescription);
+      abort();
+    }
+    [self.tableView reloadData];
+    
+  }
+
+  
+}
+
+- (void)searchFelt {
+  // start the search with predicate
+  
+//  NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"%K == %@", @"creatorUserRecordID", ourLoggedInRecordID];
+//
+  NSString *searchString = _searchController.searchBar.text;
+  if (!searchString.length) {
+    self.searchResults =self.dataEarthquakes;
+  } else {
+    // strip out all the leading and trailing spaces
+    NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"felt", strippedString];
+    self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
+    NSError *err = nil;
+    [self.fetchedResultsController performFetch:&err];
+    if (err != nil) {
+      NSLog(@"Error searching: %@", err.localizedDescription);
+      abort();
+    }
+    [self.tableView reloadData];
+    
+  }
+
+  
+}
 
 
 #pragma mark - SearchBar and UISearchController
@@ -87,10 +236,32 @@
   }
 }
 
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
-  [self updateSearchResultsForSearchController:self.searchController];
+
+
+
+
+#pragma mark - UISearchControllerDelegate
+
+- (void)willPresentSearchController:(UISearchController *)searchController
+{
+  _searchedQuakesData = [self.quakesDataAll copy];   // start our search with all data
+  
+  // configure the search bar scope buttons
+  NSMutableArray *scopeTitles = [NSMutableArray arrayWithArray:
+                                 @[NSLocalizedString(@"All", nil),
+                                   NSLocalizedString(@"Magnitude", nil),
+                                   NSLocalizedString(@"Felt", nil)]];
+  
+  self.searchController.searchBar.scopeButtonTitles = scopeTitles;
+  
+  self.refreshControl.enabled = NO;   // no refreshing the table while filtering
 }
 
+- (void)didDismissSearchController:(UISearchController *)searchController
+{
+  self.refreshControl.enabled = YES;  // bring back refresh control
+  [self.tableView reloadData];        // reset the table back since we are done searching
+}
 
 #pragma mark - Segues
 
@@ -184,7 +355,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
 
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
