@@ -58,6 +58,8 @@ typedef NS_ENUM(NSInteger, ScopeIndexes) {
   [self fetchUSGSData];
   self.dataEarthquakes = @[];
   self.searchResults = @[];
+  self.filteredQuakesData = @[];
+  self.quakesDataAll = [[self.fetchedResultsController fetchedObjects] mutableCopy];
 //  [self setupSearchController];
   [self.tableView reloadData];
 self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
@@ -153,18 +155,20 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   
   NSString *searchString = _searchController.searchBar.text;
   if (!searchString.length) {
-    self.searchResults =self.dataEarthquakes;
+    self.filteredQuakesData =self.searchedQuakesData;
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"mag", strippedString];
     self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
     NSError *err = nil;
-    [self.fetchedResultsController performFetch:&err];
+   [self.fetchedResultsController performFetch:&err];
     if (err != nil) {
       NSLog(@"Error searching: %@", err.localizedDescription);
       abort();
     }
+    self.searchedQuakesData = [[self.fetchedResultsController fetchedObjects] mutableCopy];
+    
     [self.tableView reloadData];
     
   }
@@ -178,7 +182,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
 //
   NSString *searchString = _searchController.searchBar.text;
   if (!searchString.length) {
-    self.searchResults =self.dataEarthquakes;
+    self.filteredQuakesData =self.searchedQuakesData;
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -190,6 +194,9 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
       NSLog(@"Error searching: %@", err.localizedDescription);
       abort();
     }
+    
+    self.searchedQuakesData = [[self.fetchedResultsController fetchedObjects] mutableCopy];
+
     [self.tableView reloadData];
     
   }
@@ -222,7 +229,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
   NSString *searchString = searchController.searchBar.text;
   if (!searchString.length) {
-    self.searchResults =self.dataEarthquakes;
+    self.searchedQuakesData =self.quakesDataAll;
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
