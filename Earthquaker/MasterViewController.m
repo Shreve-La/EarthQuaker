@@ -496,9 +496,9 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
             request.predicate = predicate;
             NSArray <Quake *>* fetchedQuakes = [self.context executeFetchRequest:request error:nil];
             if(fetchedQuakes.count){
-                NSLog(@"Match Found: %@", [NSNumber numberWithLong: quakes.count]);
+                NSLog(@"Match Found: %@", [NSNumber numberWithLong: fetchedQuakes.count]);
             continue;
-            }else{NSLog(@"Match Not Found: %lu", quakes.count);}
+            }else{NSLog(@"Match Not Found: %lu", fetchedQuakes.count);}
         
         
 // Unique records generate a new object with properties from JSON
@@ -507,7 +507,7 @@ NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  comple
         quake.place = quakeitem[@"properties"][@"place"];
         quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
         quake.title = quakeitem[@"properties"][@"title"];
-        quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
+//        quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
         quake.updated = [quakeitem[@"properties"][@"updated"] doubleValue];
         quake.url = quakeitem[@"properties"][@"url"];
         
