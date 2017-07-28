@@ -11,6 +11,9 @@
 #import "APICallerPlaceImage.h"
 #import "AppDelegate.h"
 #import "QuakeCell.h"
+#import <QuartzCore/QuartzCore.h>
+
+
 
 typedef NS_ENUM(NSInteger, ScopeIndexes) {
   kAllScope = 0,
@@ -45,6 +48,7 @@ typedef NS_ENUM(NSInteger, ScopeIndexes) {
 @end
 
 @implementation MasterViewController
+
 
 - (void)viewDidLoad {
 
@@ -165,7 +169,6 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
     
   }
 
-  
 }
 
 - (void)searchFelt {
@@ -223,7 +226,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   } else {
     // strip out all the leading and trailing spaces
     NSString *strippedString = [searchString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"place", strippedString];
+    NSPredicate* resultPredicate = [NSPredicate predicateWithFormat:@"SELF.%K contains[cd] %@", @"title", strippedString];
     self.fetchedResultsController.fetchRequest.predicate = resultPredicate;
     NSError *err = nil;
     [self.fetchedResultsController performFetch:&err];
@@ -300,6 +303,30 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
   Quake *quake = [self.fetchedResultsController objectAtIndexPath:indexPath];
   [self configureCell:cell withQuake:quake];
   
+  if (!cell.quakeImageView.image) {
+    cell.quakeImageView.image = [UIImage imageNamed:@"icon2"];
+  }
+  cell.quakeImageView.layer.cornerRadius = 8;
+  cell.quakeImageView.layer.masksToBounds = YES;
+  
+  cell.magnitudeLabel.textColor = [UIColor blackColor];
+//  cell.magnitudeLabel.layer.cornerRadius = 24;
+//  cell.magnitudeLabel.layer.masksToBounds = YES;
+  
+  
+
+  int magValue = [cell.magnitudeLabel.text intValue];
+  
+  if ( magValue >= 6) {
+    cell.colorLabelMag.backgroundColor = [UIColor brownColor];
+  } else if ( magValue >= 4) {
+    cell.colorLabelMag.backgroundColor = [UIColor redColor];
+  } else if ( magValue >= 2) {
+    cell.colorLabelMag.backgroundColor = [UIColor yellowColor];
+  } else {
+    cell.colorLabelMag.backgroundColor = [UIColor greenColor];
+  }
+  
   return cell;
 }
 
@@ -355,7 +382,7 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO];
 
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
