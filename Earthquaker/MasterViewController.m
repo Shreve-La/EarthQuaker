@@ -11,25 +11,22 @@
 #import "APICallerPlaceImage.h"
 #import "AppDelegate.h"
 #import "QuakeCell.h"
+#import "USGSData.h"
 #import <QuartzCore/QuartzCore.h>
-
 
 
 typedef NS_ENUM(NSInteger, ScopeIndexes) {
   kAllScope = 0,
   kMagnitudeScope,
   kFeltScope
-  
 };
+
 
 @interface MasterViewController ()
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
-
 @property (nonatomic)  NSArray *dataEarthquakes;
 @property (nonatomic)  NSArray *searchResults;
-
-
 @property (nonatomic, strong) NSMutableArray *quakesDataAll;   // all quakes data
 @property (nonatomic, strong) NSMutableArray *searchedQuakesData;  // all quakes data found based on the search bar's scope
 @property (nonatomic, strong) NSArray *filteredQuakesData;  // data currently being filtered in and out while typing in the search bar
@@ -40,12 +37,10 @@ typedef NS_ENUM(NSInteger, ScopeIndexes) {
 @property BOOL searchControllerSearchFieldWasFirstResponder;
 @property (nonatomic, strong) NSString *searchControllerText;
 @property (assign) NSInteger searchControllerScopeIndex;
-
 @property BOOL searchControllerActiveFromPreviousView;
 
-
-
 @end
+
 
 @implementation MasterViewController
 
@@ -55,7 +50,7 @@ typedef NS_ENUM(NSInteger, ScopeIndexes) {
   [super viewDidLoad];
   self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
   self.context = self.appDelegate.persistentContainer.viewContext;
-  [self fetchUSGSData];
+  [USGSData fetchUSGSDataWithContext:(NSManagedObjectContext*)self.context];
   self.dataEarthquakes = @[];
   self.searchResults = @[];
 //  [self setupSearchController];
@@ -457,87 +452,6 @@ self.navigationItem.title = @"Shaker - Realtime Earthquake Data";
 }
 
 
-#pragma mark - Fetch USGS Data; add to coredata as a Quake entity
-
--(void)fetchUSGSData{
-    
-NSURL *url = [NSURL URLWithString:@"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"];
-NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:url];
-NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    
-NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        if (error) {NSLog(@"error: %@", error.localizedDescription);
-        return ;
-    }
-    NSError *jsonError = nil;
-    
-    NSDictionary *quakes = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-    
-    if (jsonError) {
-        NSLog(@"jsonError: %@", jsonError.localizedDescription);
-        return ;
-    }
-
-    //    NSLog(@"quakes: %@", quakes);
-    
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-  
-    // Process USGS JSON Data and add to coredata.
-    for (NSDictionary *quakeitem in quakes[@"features"]) {
-        
-
-// Check if JSON quakeitem is already in core data. if yes, move on to next record.
-            NSString *url = quakeitem[@"properties"][@"url"];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.url == %@", url];
-        NSLog(@"%@", url);
-        NSLog(@"%@", predicate);
-            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Quake"];
-            request.predicate = predicate;
-            NSArray <Quake *>* fetchedQuakes = [self.context executeFetchRequest:request error:nil];
-            if(fetchedQuakes.count){
-                NSLog(@"Match Found: %@", [NSNumber numberWithLong: fetchedQuakes.count]);
-            continue;
-            }else{NSLog(@"Match Not Found: %lu", fetchedQuakes.count);}
-        
-        
-// Unique records generate a new object with properties from JSON
-        Quake *quake = [[Quake alloc] initWithContext:context];
-
-        quake.place = quakeitem[@"properties"][@"place"];
-        quake.time = [quakeitem[@"properties"][@"time"] doubleValue]; //USGS time data is in milliseconds
-        quake.title = quakeitem[@"properties"][@"title"];
-//        quake.mag = [quakeitem[@"properties"][@"mag"] floatValue];
-        quake.updated = [quakeitem[@"properties"][@"updated"] doubleValue];
-        quake.url = quakeitem[@"properties"][@"url"];
-        
-        NSString* temp = quakeitem[@"properties"][@"felt"];
-            if (![temp isEqual:[NSNull null]]){
-            quake.felt = [quakeitem[@"properties"][@"felt"] intValue];
-            }
-        quake.detail = quakeitem[@"properties"][@"detail"];
-        NSArray <NSNumber*>*geometry = quakeitem[@"geometry"][@"coordinates"];
-        quake.longitude = [geometry[0] doubleValue];
-        quake.latitude = [geometry[1] doubleValue];
-        quake.depth = [geometry[2] doubleValue];
-        // Make url for Google Nearby Places API
-        quake.nearbySearchURL = [APICallerPlaceImage makeNearbySearchURLfromQuake:quake];
-        NSLog(@"nearbySearchURL: %@", quake.nearbySearchURL);
-            }
-    
-//    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-//    [queue addOperationWithBlock:^{ [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//    [APICallerPlaceImage callNearbySearchWithQuake:(Quake*)quake];
-//    }];
-//    }];
-    
-    [self.appDelegate saveContext];
-    [self.tableView reloadData];
-
-    }];
-    
-[dataTask resume];
-}
 
         
 

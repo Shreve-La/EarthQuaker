@@ -6,10 +6,13 @@
 //  Copyright © 2017 Shreve.ca. All rights reserved.
 //
 
+
 #ifndef APIKeys_h
 #define APIKeys_h
 
-#define GOOGLE_PLACES_KEY = @"asdfaf"
+#define GOOGLE_PLACES_KEY = @""
+//incomplete implementation
 static NSString *const GOOGLE_PLACES_KEY = @"";
+
 
 #endif /* APIKeys_h */

@@ -205,7 +205,6 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Gandaki — Nepal Maps, Today at 11.45.24 PM" translatesAutoresizingMaskIntoConstraints="NO" id="syM-eW-Rwb">
                                             <rect key="frame" x="282" y="16" width="60" height="60"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="60" id="Bre-yo-KQb"/>
                                                 <constraint firstAttribute="width" constant="60" id="abv-wL-2uM"/>
                                             </constraints>
                                         </imageView>

@@ -7,13 +7,15 @@
 //
 
 #import "APICallerPlaceImage.h"
-//#import "APIKeys.h"
 
 @implementation APICallerPlaceImage
 
-static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTyeMw_k";
+static NSString *const GOOGLE_PLACES_KEY = @"";
+#warning Image loading will fail without functioning API Key / Use Caution posting these to online repo
+//API Keys can be obtained here: https://developers.google.com/places/web-service/get-api-key
 
 #pragma mark - Fetch google nearby places dictionary
+// Google Places Nearby Search reference documentation: https://developers.google.com/places/web-service/search
 
 +(NSString*)makeNearbySearchURLfromQuake:(Quake*)quake{
     NSString *baseURL = @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
@@ -28,6 +30,7 @@ static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTye
 
 
 #pragma mark - Fetch google photo id reference#
+// Google Places API Web Service Reference for Place Photos: https://developers.google.com/places/web-service/photos
 
 +(void)callNearbySearchWithQuake:(Quake*)quake {
     NSURL *url = [NSURL URLWithString:quake.nearbySearchURL];
@@ -48,11 +51,12 @@ static NSString *const GOOGLE_PLACES_KEY = @"AIzaSyDJMLLiT0G2i1_CfSJJ7IRPax6fTye
                    }
                    
                    //Retrieve photoReference from dictionary set to coredata object
-                   if(nearbyPlaceData[@"results"]){
-                       quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
-                       NSLog(@"photoReference: %@", quake.photoReference);
-                   }else{
+                   if([nearbyPlaceData[@"status"] isEqualToString:@"ZERO_RESULTS"]){
                        NSLog(@"no photoreference");
+                       quake.photoReference = @"ZERO_RESULTS";
+                   }else{
+                       quake.photoReference = nearbyPlaceData[@"results"][0][@"photos"][0][@"photo_reference"];
+                       NSLog(@"photoReference found: %@", quake.photoReference);
                    }
                    
                    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
